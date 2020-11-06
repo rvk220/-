@@ -123,11 +123,13 @@ function clickConfirmButton(){
 }
 
 function confirmEdit(numberOfItemInList){ 
-	const index = numberOfItemInList*1-1;
-	elid("sumSpan").innerHTML = formatNum(sum -= (products[index].cost - elid("costInput").value));
-	editInArray(index);
-	editListEntry(numberOfItemInList);
-	clickCloseOrOpenAddPopup();
+	if(isInputCorrect()){
+		const index = numberOfItemInList*1-1;
+		elid("sumSpan").innerHTML = formatNum(sum -= (products[index].cost - elid("costInput").value));
+		editInArray(index);
+		editListEntry(numberOfItemInList);
+		clickCloseOrOpenAddPopup();
+	}
 }
 
 function confirmAdd(){
