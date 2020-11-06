@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Expenses (by rvk220)</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="background1" class="background"> </div>
+    <script src="script.js"></script>
+    <div id="mainDiv">
+		 <h1 class="centeredContent"  id="h1">Закупівля</h1>
+		<ol id="prodList"> </ol>
+		<p id="sumP">Загальна сума:  <span id="sumSpan"></span> грн.</p>
+		<div id="bottomButtons" class="centeredContent">
+			<img src="copy2.png" id="copyListButton" onclick="copyListToClipboard()" class="mainButtons" style="display:none; width:0%;"></img>
+			<img src="add.png" onclick="clickNewAdd()" class="mainButtons"></img>
+			<!-- <div><button id="addNewButton" type="button" onclick="clickNewAdd()">Додати продукт</button></div>
+			<div><button id="copyListButton" type="button" onclick="copyListToClipboard()">Скопіювати список </br>  у буфер обміну</button></div> -->
+		</div>
+	</div>
+    <div class="centeredContent">
+      <div id="addDiv" class="bigPopUp">
+		<div class="background"></div>
+        <div class="centeredContent"><h2 id="h2">Додати продукт</h2></div>
+        <div class = "inputContainer" id="radioContainer1" data-unit="кг">
+            <label>Одиниця:</label>
+            <input type="radio" checked="true" id="kg" name="unit" onclick="clickSetUnit('кг')">
+            <label for="kg">кг</label>
+            <input type="radio" id="pcs" name="unit" onclick="clickSetUnit('шт')">
+            <label for="pcs">шт</label>
+            <input type="radio" value="" id="otherUnit" name="unit" onclick="clickSetUnit('')">
+            <label for="other">інша</label></br>
+        </div>
+        <div class="inputContainer" id="radioContainer2">
+            <input type="radio" checked="true" value="byCost" id="byCost" name="costOrQuantity" onclick="clickCostOrQuantity(value)">
+            <label for="byCost">Ввести вартість</label></br>
+            <input type="radio" value="byQuantity" id="byQuantity" name="costOrQuantity" onclick="clickCostOrQuantity(value)">
+            <label for="byQuantity">Вартість = ціна × кількість</label>
+        </div>
+        <div class="inputContainer">
+            <label for="nameInput">Назва товару:</label></br>
+            <input type="text" id="nameInput" onkeyup="isEnterPressed(event)"></input>
+        </div>
+        <div class="inputContainer">
+            <label for="priceInput">Ціна (грн/<span id="smallUnitSpan">кг</span>):</label></br>
+            <input type="number" id="priceInput" placeholder = "не обов'язково" onkeyup="processKeypress(event)" onpaste="getMissingValuesOnInput()"></input>
+        </div>
+        <div id="quantityDiv" class="inputContainer" style="opacity:0.5;">
+            <label for="quantityInput">Кількість (<span id="smallUnitSpan2">кг</span>):</label></br>
+            <input type="number" id="quantityInput" disabled="true"; onkeyup="processKeypress(event)" onpaste="getMissingValuesOnInput()"></input>
+            <input type="text" id="approx" style="display:none;"value=""></input>
+        </div>
+        <div class="inputContainer" id="costDiv" display="">
+            <label for="costInput">Вартість:</label></br>
+            <input type="number" id="costInput" onkeyup="processKeypress(event)" onpaste="getMissingValuesOnInput()"> </input>
+        </div>
+        <div class="centeredContent">
+			<img id="close1" src="close3.png" class="closeIconButton" onclick="clickCloseOrOpenAddPopup()"><img>
+            <button id="confirmButton" class="popUpButton" type="button" onclick="clickConfirmButton()">Підтвердити</button>
+        </div>
+       </div>
+	   <div id="editRemovePopUp" class="smallerPopUp">
+			<div class="background"></div>
+			<p id="addRemoveText" style="margin-top:0px; height:136px; overflow:auto;">
+				Вилучити, редагувати </br> або скопіювати до буферу обміну продукт №<span id="addRemoveNumVar"></span>:</br><span id="addRemoveTextVariable" style="color:black"></span>
+			</p>
+			<img id="close2" src="close3.png" class="closeIconButton" onclick="clickCloseOrOpenEditRemovePopUp()"><img>
+			<div id="addRemoveButtonsDiv">
+				<img class="addRemoveButtons" src="remove1.png" id="removeButton" style="width:22%"></img>
+				<img class="addRemoveButtons" src="edit1.png" id="editButton" style="width:21%"></img>
+				<img class="addRemoveButtons" style="width:20%;" src="copy1.png" id="copyItemButton"></img>
+			</div>
+	   </div>
+    </div>
+</body>
+</html>
