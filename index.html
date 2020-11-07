@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,20 +42,20 @@
         <div class="inputContainer">
             <label for="nameInput">Назва товару:</label></br>
 			<datalist id="prodDataList"></datalist>
-            <input type="text" id="nameInput" list="prodDataList" onkeyup="processNameInput(value, event)"></input>
+            <input type="text" id="nameInput" list="prodDataList" onkeyup="processNameInput(value, event.keyCode)"></input>
         </div>
         <div class="inputContainer">
             <label for="priceInput">Ціна (грн/<span id="smallUnitSpan">кг</span>):</label></br>
-            <input type="number" id="priceInput" placeholder = "не обов'язково" onkeyup="processKeypress(event)" onpaste="getMissingValuesOnInput()"></input>
+            <input type="number" id="priceInput" placeholder = "не обов'язково" onkeyup="processKeypress(event.keyCode)" onpaste="getMissingValuesOnInput()"></input>
         </div>
         <div id="quantityDiv" class="inputContainer" style="opacity:0.5;">
             <label for="quantityInput">Кількість (<span id="smallUnitSpan2">кг</span>):</label></br>
-            <input type="number" id="quantityInput" disabled="true"; onkeyup="processKeypress(event)" onpaste="getMissingValuesOnInput()"></input>
+            <input type="number" id="quantityInput" disabled="true"; onkeyup="processKeypress(event.keyCode)" onpaste="getMissingValuesOnInput()"></input>
             <input type="text" id="approx" style="display:none;"value=""></input>
         </div>
         <div class="inputContainer" id="costDiv" display="">
             <label for="costInput">Вартість:</label></br>
-            <input type="number" id="costInput" onkeyup="processKeypress(event)" onpaste="getMissingValuesOnInput()"> </input>
+            <input type="number" id="costInput" onkeyup="processKeypress(event.keyCode)" onpaste="getMissingValuesOnInput()"> </input>
         </div>
         <div class="centeredContent">
 			<img id="close1" src="close3.png" class="closeIconButton" onclick="clickCloseOrOpenAddPopup()"><img>
