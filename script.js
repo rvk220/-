@@ -80,7 +80,7 @@ function addToText(){
 function getLiInnerHtml(arrObj){
 	const name = !!arrObj.name ? arrObj.name : "Неназваний продукт";
 	let middle;
-	if (!arrObj.price || arrObj.quantity === '1') {
+	if (!arrObj.price || (arrObj.quantity === '1' && arrObj.unit === 'шт')) {
 		middle = '';
 	} else if (arrObj.quantity === '0') {
 		middle = (' (').concat(arrObj.price).concat(' грн/').concat(arrObj.unit).concat(')');
