@@ -329,12 +329,29 @@ function processKeypress(keyUpEvent){
 	}
 }
 
+function processNameInput(inputValue, keyUpEvent) {
+	isEnterPressed(keyUpEvent);
+	appendProdDataList(inputValue);
+}
+
+
 function isEnterPressed(keyUpEvent){
 	if(keyUpEvent.keyCode === 13) {
 		clickConfirmButton();
 		return true;
 	} else {
 		return false;
+	}
+}
+
+function appendProdDataList(inputValue) {
+	const prodDataListContent = ["Апельсини", "Банани", "Бараболя", "Борошно", "Буряки", "Виноград", "Вода", "Гречка", "Грушки", "Зелень", "Кабачки", "Кавун", "Капуста", "Капуста цвітна", "Капуста броколі", "Кефір", "Капуста брюссельська", "Корінь селери", "Корінь петрушки", "Корольок", "Кріп", "Кріп і петрушка", "Курятина", "Мандарини", "Масло", "Молоко", "Морква", "Насіння соняшнику", "Огірки", "Олія","Оцет", "Пакети", "Пакети для сміття", "Петрушка", "Печиво", "Пластівці", "Полуниці", "Помідори", "Приправи", "Пшоно", "Редиска", "Редька", "Риба", "Рукав для запікання", "Ряжанка", "Салат", "Свинина", "Сир", "Сир-творог", "Сир плавлений", "Сік", "Сіль", "Сирки плавлені", "Сливки", "Сметана", "Сода", "Туалетний папір", "Фініки", "Халва", "Хліб", "Хурма", "Цибуля", "Цукерки", "Цукор", "Шоколад", "Яблука", "Яловичина"];
+	const regex = new RegExp("(^| )".concat(inputValue), "i");
+	elid("prodDataList").innerHTML = "";
+	for (const el of prodDataListContent) {
+		if(!!inputValue && el.match(regex)) {
+			elid("prodDataList").innerHTML += ('<option value="' + el + '">' + '</option/>');
+		}
 	}
 }
 
