@@ -323,20 +323,26 @@ function eraseInput(){
     elid("quantityInput").value = "";
 }
 
-function processKeypress(keyUpEvent){
-	if(!isEnterPressed(keyUpEvent)){
+function processKeypress(keyCode){
+	if(!isEnterPressed(keyCode)){
 		getMissingValuesOnInput();
 	}
 }
 
-function processNameInput(inputValue, keyUpEvent) {
-	isEnterPressed(keyUpEvent);
+function processNameInput(inputValue, keyCode) {
+	isEnterPressed(keyCode);
 	appendProdDataList(inputValue);
+	blurNameInputOnSelectFromDataList(keyCode);
 }
 
+function blurNameInputOnSelectFromDataList(keyCode){
+	if (keyCode === undefined) {
+		elid("nameInput").blur();
+	}
+}
 
-function isEnterPressed(keyUpEvent){
-	if(keyUpEvent.keyCode === 13) {
+function isEnterPressed(keyCode){
+	if(keyCode === 13) {
 		clickConfirmButton();
 		return true;
 	} else {
