@@ -42,7 +42,7 @@
         <div class="inputContainer">
             <label for="nameInput">Назва товару:</label></br>
 			<datalist id="prodDataList"></datalist>
-            <input type="text" id="nameInput" list="prodDataList" onkeyup="processNameInput(value, event.keyCode)" onblur="()=>{elid('prodDataList').innerHTML = ''}"></input>
+            <input type="text" id="nameInput" list="prodDataList" onkeyup="processNameInput(value, event.keyCode)" onblur="function() {elid('prodDataList').innerHTML = ''}"></input>
         </div>
         <div class="inputContainer">
             <label for="priceInput">Ціна (грн/<span id="smallUnitSpan">кг</span>):</label></br>
