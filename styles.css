@@ -19,20 +19,26 @@ body{
 	transition: opacity 1s linear;
 }
 
+#bottomButtons {
+  padding-left: 10px;
+  padding-right: 10px;
+  overflow: hidden;
+}
+
  #bottomButtons > img {
 	transition: all 1s linear;
 }
 
 .background{
 	width:100%;
-    height:100%;
-    background: url('background.jpg');
-	background-repeat:space;
-	background-size:cover;
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    z-index: -1;
+  height:200%;
+  background: url('background.jpg');
+  background-repeat:space;
+  background-size:cover;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  z-index: -1;
 }
 
 .opaqueLayer{
@@ -235,7 +241,7 @@ li::marker{
   justify-content: center;
   position:absolute;
   bottom:5px; 
-  right:2px;"
+  right:2px;
 }
 
 @keyframes li-anim-add{
