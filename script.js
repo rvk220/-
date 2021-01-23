@@ -24,7 +24,7 @@ function onBodyLoad() {
 		elid("copyListButton").style.display = "block";
 		elid("removeListButton").style.display = "block";
 		elid("copyListButton").style.width = "30%";
-		elid("removeListButton").style.width = "28%";
+		elid("removeListButton").style.width = "29%";
 	}
 }
 
@@ -464,7 +464,7 @@ function changeDisplayOfCopyAndDeleteListButton(){
 		elid("removeListButton").style.display = "block";
 		setTimeout(function() {
 			elid("copyListButton").style.width = "30%";
-			elid("removeListButton").style.width = "28%";
+			elid("removeListButton").style.width = "29%";
 			elid("copyListButton").style.transform = "rotate(1turn)";
 			elid("removeListButton").style.transform = "rotate(1turn)";
 		}, 4);
