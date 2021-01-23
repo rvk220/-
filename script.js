@@ -10,6 +10,21 @@ function Prod (name, price, unit, approx, quantity, cost){
 var products = [];
 var sum = 0;
 
+function onBodyLoad() {
+	const dataJSON = localStorage.getItem('data');
+	if (dataJSON) {
+		const data = JSON.parse(dataJSON);
+		products = data.products;
+		for (const product of products) {
+			addToText(product);
+		}
+		sum = data.sum;
+		elid("sumSpan").innerHTML = data.sum;
+		elid("sumP").style.display = "block";
+		changeDisplayOfCopyAndDeleteListButton();
+	}
+}
+
 function updateLocalStorage() {
 	if(products.length) {
 		localStorage.setItem('data', JSON.stringify({ products, sum }));
@@ -18,22 +33,10 @@ function updateLocalStorage() {
 	}
 }
 
-function onBodyLoad() {
-	const dataJSON = localStorage.getItem('data');
-	if(dataJSON) {
-		if(confirm('Ви бажаєте відновити останній збережений список?')) {
-			const data = JSON.parse(dataJSON);
-			products = data.products;
-			for(const product of products) {
-				addToText(product);
-			}
-			sum = data.sum;
-			elid("sumSpan").innerHTML = data.sum;
-			elid("sumP").style.display = "block";
-			changeDisplayOfCopyListButton();
-		} else {
-			localStorage.removeItem('data');
-		}
+function deleteAll() {
+	if (confirm('Ви справді бажаєте видалити весь збережений список?')) {
+		localStorage.removeItem('data');
+		window.location.reload();
 	}
 }
 
@@ -164,7 +167,7 @@ function confirmAdd(){
 	if(isInputCorrect()){
 		if(sum === 0){
 				elid("sumP").style.display = "block";
-				changeDisplayOfCopyListButton();
+				changeDisplayOfCopyAndDeleteListButton();
 		}
      clickCloseOrOpenAddPopup();
      addToArray();
@@ -238,7 +241,7 @@ function clickRemoveButton(numberInList){
 		removeFromText(numberInList);
 		if (sum === 0){
 			elid("sumP").style.display = "none";
-			changeDisplayOfCopyListButton();
+			changeDisplayOfCopyAndDeleteListButton();
 		}
 		clickCloseOrOpenEditRemovePopUp(true);
 		updateLocalStorage();
@@ -441,14 +444,24 @@ function copyListToClipboard(){
 	}
 }
 
-function changeDisplayOfCopyListButton(){
+function changeDisplayOfCopyAndDeleteListButton(){
 	if(elid("copyListButton").style.display !== "none") {
 		elid("copyListButton").style.width = "0%";
+		elid("removeListButton").style.width = "0%";
 		elid("copyListButton").style.transform = "none";
-		setTimeout(function() {elid("copyListButton").style.display = "none"}, 1000);
+		elid("removeListButton").style.transform = "none";
+		setTimeout(function() {
+			elid("copyListButton").style.display = "none";
+			elid("removeListButton").style.display = "none";
+		}, 1000);
 	} else {
 		elid("copyListButton").style.display = "block";
-		setTimeout(function() {elid("copyListButton").style.width = "30%";
-		elid("copyListButton").style.transform = "rotate(1turn)"}, 4);
+		elid("removeListButton").style.display = "block";
+		setTimeout(function() {
+			elid("copyListButton").style.width = "30%";
+			elid("removeListButton").style.width = "30%";
+			elid("copyListButton").style.transform = "rotate(1turn)";
+			elid("removeListButton").style.transform = "rotate(1turn)";
+		}, 4);
 	}
 }
