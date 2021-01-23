@@ -10,6 +10,33 @@ function Prod (name, price, unit, approx, quantity, cost){
 var products = [];
 var sum = 0;
 
+function updateLocalStorage() {
+	if(products.length) {
+		localStorage.setItem('data', JSON.stringify({ products, sum }));
+	} else {
+		localStorage.removeItem('data');
+	}
+}
+
+function onBodyLoad() {
+	const dataJSON = localStorage.getItem('data');
+	if(dataJSON) {
+		if(confirm('Ви бажаєте відновити останній збережений список?')) {
+			const data = JSON.parse(dataJSON);
+			products = data.products;
+			for(const product of products) {
+				addToText(product);
+			}
+			sum = data.sum;
+			elid("sumSpan").innerHTML = data.sum;
+			elid("sumP").style.display = "block";
+			changeDisplayOfCopyListButton();
+		} else {
+			localStorage.removeItem('data');
+		}
+	}
+}
+
 function formatNum(num){
 	const strNum = num.toFixed(2);
 	return !strNum.match(/\.00/) ? strNum : num.toString(10);
@@ -64,10 +91,10 @@ function editInArray(index){
     products[index].cost = trimNumericInput(elid("costInput").value, 'cost');
 }
 
-function addToText(){
+function addToText(item = null){
     let num = products.length.toString(10);
-    let li = document.createElement("li");
-	let item = products[products.length-1];
+	let li = document.createElement("li");
+	if(!item) { item = products[products.length-1]; }
 	li.innerHTML = getLiInnerHtml(item);
 	li.setAttribute("class", "liAnimAdd");
 	elid("prodList").appendChild(li);
@@ -120,6 +147,7 @@ function clickConfirmButton(){
 	} else {
 		confirmEdit(elid("addRemoveNumVar").innerHTML);
 	}
+	updateLocalStorage();
 }
 
 function confirmEdit(numberOfItemInList){ 
@@ -213,6 +241,7 @@ function clickRemoveButton(numberInList){
 			changeDisplayOfCopyListButton();
 		}
 		clickCloseOrOpenEditRemovePopUp(true);
+		updateLocalStorage();
 	} else {
 		clickCloseOrOpenEditRemovePopUp(false);
 	}
