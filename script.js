@@ -16,12 +16,15 @@ function onBodyLoad() {
 		const data = JSON.parse(dataJSON);
 		products = data.products;
 		for (const product of products) {
-			addToText(product);
+			addToText(product, false);
 		}
 		sum = data.sum;
 		elid("sumSpan").innerHTML = data.sum;
 		elid("sumP").style.display = "block";
-		changeDisplayOfCopyAndDeleteListButton();
+		elid("copyListButton").style.display = "block";
+		elid("removeListButton").style.display = "block";
+		elid("copyListButton").style.width = "30%";
+		elid("removeListButton").style.width = "28%";
 	}
 }
 
@@ -94,12 +97,14 @@ function editInArray(index){
     products[index].cost = trimNumericInput(elid("costInput").value, 'cost');
 }
 
-function addToText(item = null){
+function addToText(item = null, animateOnAdd = true){
     let num = products.length.toString(10);
 	let li = document.createElement("li");
 	if(!item) { item = products[products.length-1]; }
 	li.innerHTML = getLiInnerHtml(item);
-	li.setAttribute("class", "liAnimAdd");
+	if(animateOnAdd) {
+		li.setAttribute("class", "liAnimAdd");
+	}
 	elid("prodList").appendChild(li);
 	satt(li, "ontouchstart", "mouseDown(getElOfListNum(this))");
 	satt(li, "onmousedown", "mouseDown(getElOfListNum(this))");
@@ -459,7 +464,7 @@ function changeDisplayOfCopyAndDeleteListButton(){
 		elid("removeListButton").style.display = "block";
 		setTimeout(function() {
 			elid("copyListButton").style.width = "30%";
-			elid("removeListButton").style.width = "30%";
+			elid("removeListButton").style.width = "28%";
 			elid("copyListButton").style.transform = "rotate(1turn)";
 			elid("removeListButton").style.transform = "rotate(1turn)";
 		}, 4);
