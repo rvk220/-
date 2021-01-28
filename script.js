@@ -96,7 +96,6 @@ function editInArray(index){
 }
 
 function addToText(item = null, animateOnAdd = true){
-    let num = products.length.toString(10);
 	let li = document.createElement("li");
 	if(!item) { item = products[products.length-1]; }
 	li.innerHTML = getLiInnerHtml(item);
