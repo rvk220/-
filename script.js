@@ -95,7 +95,7 @@ function editInArray(index){
     products[index].cost = trimNumericInput(elid("costInput").value, 'cost');
 }
 
-function addToText(item = null, animateOnAdd = true){
+function addToText(item = null, animateOnAdd = true) {
 	let li = document.createElement("li");
 	if(!item) { item = products[products.length-1]; }
 	li.innerHTML = getLiInnerHtml(item);
@@ -357,30 +357,19 @@ function eraseInput(){
     elid("quantityInput").value = "";
 }
 
-function processKeypress(keyCode){
-	if(!isEnterPressed(keyCode)){
-		getMissingValuesOnInput();
-	}
-}
-
-function processNameInput(inputValue, keyCode) {
-	isEnterPressed(keyCode);
-	appendProdDataList(inputValue);
-	blurNameInputOnSelectFromDataList(keyCode);
-}
-
-function blurNameInputOnSelectFromDataList(keyCode){
-	if (keyCode === undefined) {
-		elid("nameInput").blur();
-	}
-}
-
-function isEnterPressed(keyCode){
-	if(keyCode === 13) {
-		clickConfirmButton();
-		return true;
+function processKeypress(keyCode, nameInput) {
+	if (keyCode !== 13) {
+		if (nameInput === undefined) {
+			getMissingValuesOnInput();
+		} else {
+			if (keyCode === undefined) {
+				elid("nameInput").blur();
+			} else {
+				appendProdDataList(nameInput);
+			}
+		}
 	} else {
-		return false;
+		clickConfirmButton();
 	}
 }
 
