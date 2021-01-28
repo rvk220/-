@@ -11,15 +11,13 @@ var products = [];
 var sum = 0;
 
 function onBodyLoad() {
-	const dataJSON = localStorage.getItem('data');
-	if (dataJSON) {
-		const data = JSON.parse(dataJSON);
+	const raw = localStorage.getItem('data');
+	if (raw) {
+		const data = JSON.parse(raw);
 		products = data.products;
-		for (const product of products) {
-			addToText(product, false);
-		}
 		sum = data.sum;
-		elid("sumSpan").innerHTML = data.sum;
+		products.forEach(prod => addToText(prod, false));
+		elid("sumSpan").innerHTML = sum;
 		elid("sumP").style.display = "block";
 		elid("copyListButton").style.display = "block";
 		elid("removeListButton").style.display = "block";
