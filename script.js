@@ -5,7 +5,7 @@ const gattid = (id, attr) => elid(id).getAttribute(attr);
 
 function Prod (name, price, unit, approx, quantity, cost){
 	this.name = name.trim();
-	this.price = (price == 0) ? "" : price;
+	this.price = price ? price : "";
 	this.cost = cost;
 	this.unit = unit.trim();
 	this.quantity = (!quantity && !!price) ? "1" : quantity;
@@ -28,6 +28,7 @@ function onBodyLoad() {
 		elid("copyListButton").style.width = "30%";
 		elid("removeListButton").style.width = "29%";
 	}
+	window.onstorage = () => window.location.reload();
 }
 
 function updateLocalStorage() {
@@ -162,7 +163,7 @@ function confirmEdit(numberOfItemInList){
 
 function confirmAdd(){
 	if(isInputCorrect()){
-		if(sum === 0) {
+		if(!sum) {
 			elid("sumP").style.display = "block";
 			changeDisplayOfCopyAndDeleteListButton();
 		}
@@ -238,7 +239,7 @@ function clickRemoveButton(){
 		elid("sumSpan").innerHTML = formatNum(sum -= 1*products[index].cost);
 		removeFromArray(index);
 		removeFromText(numberInList);
-		if (sum === 0){
+		if (!sum) {
 			elid("sumP").style.display = "none";
 			changeDisplayOfCopyAndDeleteListButton();
 		}
@@ -374,13 +375,15 @@ function appendProdDataList(inputValue) {
 	const prodDataListContent = ["Абрикоси", "Апельсини", "Банани", "Бараболя", "Борошно", "Буряки", "Вермішель", "Виноград", "Вишні", "Вода", "Гречка", "Грушки", "Диня", "Зелень", "Ізюм", "Кабачки", "Кавун", "Капуста", "Капуста цвітна", "Капуста броколі", "Кефір", "Капуста брюссельська", "Корінь селери", "Корінь петрушки", "Корольок", "Кріп", "Кріп і петрушка", "Курятина", "Мандарини", "Масло", "Молоко", "Морква", "Морозиво", "М'ясо", "Насіння соняшнику", "Огірки", "Олія", "Оцет", "Пакети", "Пакети для сміття", "Перець", "Персики", "Петрушка", "Печиво", "Пластівці", "Полуниці", "Помідори", "Приправи", "Пшоно", "Редиска", "Редька", "Риба", "Рукав для запікання", "Ряжанка", "Салат", "Свинина", "Сир", "Сир-творог", "Сир плавлений", "Сік", "Сіль", "Сирки плавлені", "Сливки", "Сметана", "Сода", "Туалетний папір", "Фініки", "Халва", "Хліб", "Хурма", "Цибуля", "Цукерки", "Цукор", "Черешні", "Часник", "Шоколад", "Яблука", "Яйця", "Яловичина"];
 	if (inputValue) {
 		try {
-			const regex = new RegExp(`(^| )${inputValue}`, "i");
+			const regex = new RegExp(`^${inputValue}`, "i");
 			const temp = [];
-			prodDataListContent.forEach(el => {
+			for (const el of prodDataListContent) {
 				if (el.match(regex)) {
 					temp.push(`<option value="${el}"></option>`);
+				} else if (temp.length) {
+					break;
 				}
-			});
+			}
 			elid("prodDataList").innerHTML = temp.join('\n');
 		} catch(e) {
 			elid("prodDataList").innerHTML = "";
