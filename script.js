@@ -8,7 +8,7 @@ function Prod (name, price, unit, approx, quantity, cost){
 	this.price = price ? price : "";
 	this.cost = cost;
 	this.unit = unit.trim();
-	this.quantity = (!quantity && !!price) ? "1" : quantity;
+	this.quantity = (!quantity && price) ? "1" : quantity;
 	this.approx = approx;
 }
 var products = [];
@@ -107,18 +107,17 @@ function addToText(item = null, animateOnAdd = true) {
 	li.onmouseup = () => mouseUp(li);
 }
 
-function getLiInnerHtml(arrObj){
-	const name = !!arrObj.name ? arrObj.name : "Неназваний продукт";
-	let middle;
-	if (!arrObj.price || (arrObj.quantity === '1' && arrObj.unit === 'шт')) {
-		middle = '';
-	} else if (arrObj.quantity === '0') {
-		middle = (' (').concat(arrObj.price).concat(' грн/').concat(arrObj.unit).concat(')');
-	} else {
-		middle = (' (').concat(arrObj.price).concat(' грн/').concat(arrObj.unit).concat(', ') +
-		(arrObj.approx).concat(arrObj.quantity).concat(' ').concat(arrObj.unit).concat(')');
-	}
-	return name.concat(middle).concat (' – ').concat(arrObj.cost).concat(' грн');
+function getLiInnerHtml({ name, price, unit, cost, quantity, approx }) {
+	name = name ? name : "Неназваний продукт";
+	return `${name}${(() => {
+		if (!price || (quantity === '1' && unit === 'шт')) {
+			return '';
+		} else if (quantity === '0') {
+			return ` (${price} грн/${unit})`;
+		} else {
+			return ` (${price} грн/${unit}, ${approx}${quantity} ${unit})`;
+		}
+	})()} – ${cost} грн`;
 }
 
 let timeOut;
@@ -200,12 +199,11 @@ function trimNumericInput(strNum, inputType) {
 
 function clickEditButton() {
 	const numberOfItemInList = elid('addRemoveNumVar').innerHTML;
-	const index = 1*numberOfItemInList - 1;
 	elid("h2").innerHTML="Ред. прод. №" + numberOfItemInList;
-	const unit = products[index].unit;
+	const {name, price, unit, approx, quantity, cost} = products[1*numberOfItemInList-1];
 	clickCloseOrOpenAddPopup();
 	clickCloseOrOpenEditRemovePopUp(false);
-	elid((!!unit.match(/шт/) || !!products[index].approx) ?  'byCost' : 'byQuantity').click();
+	elid((unit.match(/шт/) || approx) ?  'byCost' : 'byQuantity').click();
 	clickSetUnit(unit);
 	if (unit.match(/кг/)){
 		elid("kg").checked = "true";
@@ -214,10 +212,10 @@ function clickEditButton() {
 	} else {
 		elid("otherUnit").checked = "true";
 	}
-	elid("quantityInput").value = products[index].quantity; 
-	elid("nameInput").value = products[index].name;
-    elid("priceInput").value = products[index].price;
-    elid("costInput").value = products[index].cost;
+	elid("quantityInput").value = quantity; 
+	elid("nameInput").value = name;
+    elid("priceInput").value = price;
+    elid("costInput").value = cost;
 	setPlaceholdersAndApprox();
 }
 
@@ -398,9 +396,9 @@ function getMissingValuesOnInput(){
     const cost = elid("costInput");
     const quant = elid("quantityInput");
 	if (cost.disabled) {
-		cost.value = price.value == 0 ? '' : (!!quant.value ? 1 * (price.value * quant.value).toFixed(2) : 1*price.value);
+		cost.value = !price.value ? '' : (quant.value ? 1 * (price.value * quant.value).toFixed(2) : 1*price.value);
 	} else {
-		quant.value = !cost.value ? '' : (price.value == 0 ? '' :  1 * (cost.value / price.value).toFixed(2));
+		quant.value = !cost.value ? '' : (price.value ? '' :  1 * (cost.value / price.value).toFixed(2));
 	}
 	setPlaceholdersAndApprox();
 }
