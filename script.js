@@ -101,11 +101,10 @@ function addToText(item = null, animateOnAdd = true) {
 		li.setAttribute("class", "liAnimAdd");
 	}
 	elid("prodList").appendChild(li);
-	const listen = (type, fn) => li.addEventListener(type, e => fn(e.target));
-	listen('mousedown', mouseDown);
-	listen('touchstart', mouseDown);
-	listen('mouseup',  mouseUp);
-	listen('touchend', mouseUp);
+	li.ontouchstart = () => mouseDown(li);
+	li.onmousedown = () => mouseDown(li);
+	li.ontouchend = () => mouseUp(li);
+	li.onmouseup = () => mouseUp(li);
 }
 
 function getLiInnerHtml(arrObj){
