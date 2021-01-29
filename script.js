@@ -1,3 +1,8 @@
+const elid = id => document.getElementById(id);
+const satt = (el, attr, val) => el.setAttribute(attr, val);
+const sattid = (id, attr, val) => satt(elid(id), attr, val);
+const gattid = (id, attr) => elid(id).getAttribute(attr);
+
 function Prod (name, price, unit, approx, quantity, cost){
 	this.name = name.trim();
 	this.price = (price == 0) ? "" : price;
@@ -6,7 +11,6 @@ function Prod (name, price, unit, approx, quantity, cost){
 	this.quantity = (!quantity && !!price) ? "1" : quantity;
 	this.approx = approx;
 }
-
 var products = [];
 var sum = 0;
 
@@ -36,8 +40,18 @@ function updateLocalStorage() {
 
 function deleteAll() {
 	if (confirm('Ви справді бажаєте видалити весь збережений список?')) {
+		changeStateOfMainDiv(false);
 		localStorage.removeItem('data');
-		window.location.reload();
+		products = [];
+		sum = 0;
+		elid('prodList').classList.add("liAnimRemove");
+		setTimeout(() => {
+			elid('prodList').innerHTML = "";
+			changeStateOfMainDiv(false);
+			elid('prodList').classList.remove("liAnimRemove");
+		}, 1000);
+		elid("sumP").style.display = "none";
+		changeDisplayOfCopyAndDeleteListButton();
 	}
 }
 
@@ -46,34 +60,17 @@ function formatNum(num){
 	return !strNum.match(/\.00/) ? strNum : num.toString(10);
 }
 
-function elOfList(numberOfItemInList){
-	const selector = "#prodList > li:nth-child(" + numberOfItemInList.toString(10)  + ")";
-	return document.querySelector(selector);
+function elOfList(num) {
+	return document.querySelector(`#prodList > li:nth-child(${num})`);
 }
 
-function getElOfListNum(obj){
-	for (let i = products.length; i>0; i--){
-		if(obj === elOfList(i)) {
+function getElOfListNum(clickedLi) {
+	for (let i = products.length; i > 0; i--){
+		if(clickedLi === elOfList(i)) {
 			return i;
 		}
 	}
-	throw 'could not get elOfList number!';
-}
-
-function elid(id){
-	return document.getElementById(id);
-}
-
-function satt(el, attr, val){
-	el.setAttribute(attr, val);
-}
-
-function sattid(id, attr, val){
-	satt(elid(id), attr, val);
-}
-
-function gattid(id, attr){
-	return elid(id).getAttribute(attr);
+	console.error('could not get elOfList number!');
 }
 
 function addToArray(){
@@ -103,10 +100,11 @@ function addToText(item = null, animateOnAdd = true) {
 		li.setAttribute("class", "liAnimAdd");
 	}
 	elid("prodList").appendChild(li);
-	satt(li, "ontouchstart", "mouseDown(getElOfListNum(this))");
-	satt(li, "onmousedown", "mouseDown(getElOfListNum(this))");
-	satt(li, "ontouchend", "mouseUp(getElOfListNum(this))");
-	satt(li, "onmouseup", "mouseUp(getElOfListNum(this))");
+	const listen = (type, fn) => li.addEventListener(type, e => fn(e.target));
+	listen('mousedown', mouseDown);
+	listen('touchstart', mouseDown);
+	listen('mouseup',  mouseUp);
+	listen('touchend', mouseUp);
 }
 
 function getLiInnerHtml(arrObj){
@@ -124,26 +122,23 @@ function getLiInnerHtml(arrObj){
 }
 
 let timeOut;
-function mouseDown(numberInList){
-    timeOut = setTimeout(showEditRemovePopUp, 500, numberInList);
-    elOfList(numberInList).style.backgroundColor='lightsteelblue';
+function mouseDown(li) {
+	timeOut = setTimeout(() => showEditRemovePopUp(getElOfListNum(li)), 500);
+	li.style.backgroundColor='lightsteelblue';
 }
-function mouseUp(numberInList){
-    clearTimeout(timeOut);
-	satt(elOfList(numberInList), "class", "liAnimTouchEnd");
-    elOfList(numberInList).style.backgroundColor='';
-	setTimeout(()=> {elOfList(numberInList).removeAttribute("class")}, 300);
+function mouseUp(li){
+	clearTimeout(timeOut);
+	satt(li, "class", "liAnimTouchEnd");
+	li.style.backgroundColor='';
+	setTimeout(() => li.removeAttribute("class"), 300);
 }
 
 function showEditRemovePopUp(numberInList){
 	elOfList(numberInList).style.backgroundColor='';
-    let temp = "«" + elOfList(numberInList).textContent + "?»";
+	let temp = `«${elOfList(numberInList).textContent}»?`;
 	elid("addRemoveTextVariable").innerHTML = temp;
 	elid("addRemoveNumVar").innerHTML = numberInList; 	
 	clickCloseOrOpenEditRemovePopUp(false);
-	sattid("copyItemButton", "onclick", "clickCopyItemButton(elOfList(elid('addRemoveNumVar').innerHTML).textContent)");
-	sattid("removeButton", "onclick", "clickRemoveButton(elid('addRemoveNumVar').innerHTML)");
-	sattid("editButton", "onclick", "clickEditButton(elid('addRemoveNumVar').innerHTML)");
 }
 
 function clickConfirmButton(){
@@ -167,9 +162,9 @@ function confirmEdit(numberOfItemInList){
 
 function confirmAdd(){
 	if(isInputCorrect()){
-		if(sum === 0){
-				elid("sumP").style.display = "block";
-				changeDisplayOfCopyAndDeleteListButton();
+		if(sum === 0) {
+			elid("sumP").style.display = "block";
+			changeDisplayOfCopyAndDeleteListButton();
 		}
      clickCloseOrOpenAddPopup();
      addToArray();
@@ -203,7 +198,8 @@ function trimNumericInput(strNum, inputType) {
 	}
 }
 
-function clickEditButton(numberOfItemInList) {
+function clickEditButton() {
+	const numberOfItemInList = elid('addRemoveNumVar').innerHTML;
 	const index = 1*numberOfItemInList - 1;
 	elid("h2").innerHTML="Ред. прод. №" + numberOfItemInList;
 	const unit = products[index].unit;
@@ -230,10 +226,11 @@ function editListEntry(numberOfItemInList){
 	const item = products[numberOfItemInList*1 - 1];
     elOfList(numberOfItemInList).innerHTML =  getLiInnerHtml(item);
 	li.removeAttribute("class");
-	setTimeout(function(){li.setAttribute("class", "liAnimEdit")}, 4);
+	setTimeout(() => li.setAttribute("class", "liAnimEdit"), 4);
 }
 
-function clickRemoveButton(numberInList){
+function clickRemoveButton(){
+	const numberInList = elid('addRemoveNumVar').innerHTML;
 	const warning = "Ви впевнені, що бажаєте вилучити зі списку продукт " +
 	elid("addRemoveTextVariable").innerHTML + "?"
 	if(confirm(warning)){
@@ -252,8 +249,8 @@ function clickRemoveButton(numberInList){
 	}
 }
 
-function clickCopyItemButton(str){
-	copyToClipboard(str);
+function clickCopyItemButton(){
+	copyToClipboard(elOfList(elid('addRemoveNumVar').innerHTML).textContent);
 	clickCloseOrOpenEditRemovePopUp(false);
 }
 
@@ -267,15 +264,15 @@ function changeDisplayOfEditRemovePopUp(){
 	sattid("editRemovePopUp", "class", cl);
 }
 
-function copyToClipboard(str){
-  var copyText = document.createElement("textarea");
-  copyText.value = str;
-  document.body.appendChild(copyText);
-  copyText.select();
-  copyText.setSelectionRange(0, 99999); 
-  document.execCommand("copy");
-  document.body.removeChild(copyText);
-	alert("Скопійовано до буферу обміну: " +  '\n"' + copyText.value  + '".');
+function copyToClipboard(str) {
+	var copyText = document.createElement("textarea");
+	copyText.value = str;
+	document.body.appendChild(copyText);
+	copyText.select();
+	copyText.setSelectionRange(0, 99999);
+	document.execCommand("copy");
+	document.body.removeChild(copyText);
+	alert("Скопійовано до буферу обміну: " + '\n"' + copyText.value + '".');
 }
 
 function clickSetUnit(unit){
@@ -301,14 +298,14 @@ function clickNewAdd(){
 }
 
 function removeFromArray(index){
-	 products.splice(index, 1);
+	products.splice(index, 1);
 }
 
 function removeFromText(numberInList){
 	const li = elOfList(numberInList);
 	li.removeAttribute("class");
-	setTimeout(function() { li.setAttribute("class", "liAnimRemove") }, 4);
-	setTimeout(function() { elid("prodList").removeChild(li) }, 1000);
+	setTimeout(() => li.setAttribute("class", "liAnimRemove"), 4);
+	setTimeout(() => elid("prodList").removeChild(li), 1000);
 }
 
 function clickCloseOrOpenAddPopup(){
@@ -330,7 +327,7 @@ function changeStateOfMainDiv(isDelayed){
 		if (!isDelayed) {
 			elid("mainDiv").removeAttribute("class");
 		} else {
-			setTimeout(() => {elid("mainDiv").removeAttribute("class")}, 1000);
+			setTimeout(() => elid("mainDiv").removeAttribute("class"), 1000);
 		}
 	}
 }
@@ -376,12 +373,18 @@ function processKeypress(keyCode, nameInput) {
 function appendProdDataList(inputValue) {
 	const prodDataListContent = ["Абрикоси", "Апельсини", "Банани", "Бараболя", "Борошно", "Буряки", "Вермішель", "Виноград", "Вишні", "Вода", "Гречка", "Грушки", "Диня", "Зелень", "Ізюм", "Кабачки", "Кавун", "Капуста", "Капуста цвітна", "Капуста броколі", "Кефір", "Капуста брюссельська", "Корінь селери", "Корінь петрушки", "Корольок", "Кріп", "Кріп і петрушка", "Курятина", "Мандарини", "Масло", "Молоко", "Морква", "Морозиво", "М'ясо", "Насіння соняшнику", "Огірки", "Олія", "Оцет", "Пакети", "Пакети для сміття", "Перець", "Персики", "Петрушка", "Печиво", "Пластівці", "Полуниці", "Помідори", "Приправи", "Пшоно", "Редиска", "Редька", "Риба", "Рукав для запікання", "Ряжанка", "Салат", "Свинина", "Сир", "Сир-творог", "Сир плавлений", "Сік", "Сіль", "Сирки плавлені", "Сливки", "Сметана", "Сода", "Туалетний папір", "Фініки", "Халва", "Хліб", "Хурма", "Цибуля", "Цукерки", "Цукор", "Черешні", "Часник", "Шоколад", "Яблука", "Яйця", "Яловичина"];
 	elid("prodDataList").innerHTML = "";
-	if(!!inputValue) {
-		const regex = new RegExp("(^| )".concat(inputValue), "i");
-		for (const el of prodDataListContent) {
-			if(el.match(regex)) {
-				elid("prodDataList").innerHTML += ('<option value="' + el + '">' + '</option/>');
-			}
+	if (inputValue) {
+		try {
+			const regex = new RegExp(`(^| )${inputValue}`, "i");
+			const temp = [];
+			prodDataListContent.forEach(el => {
+				if (el.match(regex)) {
+					temp.push(`<option value="${el}"></option>`);
+				}
+			});
+			elid("prodDataList").innerHTML = temp.join('\n');
+		} catch(e) {
+			console.warn(e.message);
 		}
 	}	
 }
@@ -414,21 +417,17 @@ function setPlaceholdersAndApprox() {
 	}
 }
 
-function isInputCorrect(){
-	if(elid("costInput").value < 0.01 ||  elid("priceInput").value < 0) {
-		 alert("Помилка: введені дані є хибними та/або недостатніми, щоб отримати вартість!");
-		 return false;
-	} else {
-		return true;
-	}
+function isInputCorrect() {
+	return (elid('costInput').value < 0.01 ||  elid('priceInput').value < 0) ? (() => {
+		alert("Помилка: введені дані є хибними та/або недостатніми, щоб отримати вартість!");
+		return false;
+	})() : true;
 }
 
 function copyListToClipboard(){
 	if (products.length > 0) {
-		let arr = new Array(products.length);
-		for(let i = 0;  i < arr.length; i++){
-			arr[i] = (i+1).toString() + ') ' + elOfList(i+1).textContent;
-		}
+		let index = 0;
+		const arr = [...elid('prodList').children].map(li => `${++index}) ${li.textContent}`);
 		copyToClipboard(arr.join(';\n') + '.' + '\n' + elid('sumP').textContent.toUpperCase());
 	} else {
 		alert('Помилка: неможливо скопіювати у буфер обміну порожній список!');
@@ -441,14 +440,14 @@ function changeDisplayOfCopyAndDeleteListButton(){
 		elid("removeListButton").style.width = "0%";
 		elid("copyListButton").style.transform = "none";
 		elid("removeListButton").style.transform = "none";
-		setTimeout(function() {
+		setTimeout(() => {
 			elid("copyListButton").style.display = "none";
 			elid("removeListButton").style.display = "none";
 		}, 1000);
 	} else {
 		elid("copyListButton").style.display = "block";
 		elid("removeListButton").style.display = "block";
-		setTimeout(function() {
+		setTimeout(() => {
 			elid("copyListButton").style.width = "30%";
 			elid("removeListButton").style.width = "29%";
 			elid("copyListButton").style.transform = "rotate(1turn)";
