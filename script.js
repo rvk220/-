@@ -393,11 +393,12 @@ function appendProdDataList(inputValue) {
 function getMissingValuesOnInput(){
     const price = elid("priceInput");
     const cost = elid("costInput");
-    const quant = elid("quantityInput");
+	const quant = elid("quantityInput");
+	const [pv, cv, qv] = [price.value, cost.value, quant.value];
 	if (cost.disabled) {
-		cost.value = !price.value ? '' : (quant.value ? 1 * (price.value * quant.value).toFixed(2) : 1*price.value);
+		cost.value = !pv ? '' : (qv ? 1 * (pv * qv).toFixed(2) : 1*pv);
 	} else {
-		quant.value = !cost.value ? '' : (price.value == 0 ? '' :  1 * (cost.value / price.value).toFixed(2));
+		quant.value = !cv ? '' : (pv == 0 ? '' :  1 * (cv / pv).toFixed(2));
 	}
 	setPlaceholdersAndApprox();
 }
