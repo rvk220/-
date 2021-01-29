@@ -109,9 +109,9 @@ function addToText(item = null, animateOnAdd = true) {
 function getLiInnerHtml({ name, price, unit, cost, quantity, approx }) {
 	name = name ? name : "Неназваний продукт";
 	return `${name}${(() => {
-		if (price === '0' || (quantity === '1' && unit === 'шт')) {
+		if (price == 0 || (quantity === '1' && unit === 'шт')) {
 			return '';
-		} else if (quantity === '0') {
+		} else if (quantity == 0) {
 			return ` (${price} грн/${unit})`;
 		} else {
 			return ` (${price} грн/${unit}, ${approx}${quantity} ${unit})`;
