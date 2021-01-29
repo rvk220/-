@@ -74,23 +74,22 @@ function getElOfListNum(clickedLi) {
 	console.error('could not get elOfList number!');
 }
 
-function addToArray(){
+const getArrayItemFromInput = () => {
     const unit = gattid("radioContainer1", "data-unit");
     const name = elid("nameInput").value;
     const price = trimNumericInput(elid("priceInput").value, 'price');
     const approx = elid("approx").value;
     const quantity = trimNumericInput(elid("quantityInput").value, 'quantity');
     const cost = trimNumericInput(elid("costInput").value, 'cost');
-	products.push(new Prod(name, price, unit, approx, quantity, cost));
+	return new Prod(name, price, unit, approx, quantity, cost);
 }
 
-function editInArray(index){ 
-	products[index].name = elid("nameInput").value;
-    products[index].price = trimNumericInput(elid("priceInput").value, 'price');
-	products[index].unit = gattid("radioContainer1", "data-unit");
-	products[index].approx = elid("approx").value;
-	products[index].quantity = trimNumericInput(elid("quantityInput").value, 'quantity');
-    products[index].cost = trimNumericInput(elid("costInput").value, 'cost');
+function addToArray(){
+	products.push(getArrayItemFromInput());
+}
+
+function editInArray(index) {
+	products[index] = getArrayItemFromInput();
 }
 
 function addToText(item = null, animateOnAdd = true) {
@@ -110,7 +109,7 @@ function addToText(item = null, animateOnAdd = true) {
 function getLiInnerHtml({ name, price, unit, cost, quantity, approx }) {
 	name = name ? name : "Неназваний продукт";
 	return `${name}${(() => {
-		if (!price || (quantity === '1' && unit === 'шт')) {
+		if (price === '0' || (quantity === '1' && unit === 'шт')) {
 			return '';
 		} else if (quantity === '0') {
 			return ` (${price} грн/${unit})`;
@@ -398,7 +397,7 @@ function getMissingValuesOnInput(){
 	if (cost.disabled) {
 		cost.value = !price.value ? '' : (quant.value ? 1 * (price.value * quant.value).toFixed(2) : 1*price.value);
 	} else {
-		quant.value = !cost.value ? '' : (price.value ? '' :  1 * (cost.value / price.value).toFixed(2));
+		quant.value = !cost.value ? '' : (price.value == 0 ? '' :  1 * (cost.value / price.value).toFixed(2));
 	}
 	setPlaceholdersAndApprox();
 }
