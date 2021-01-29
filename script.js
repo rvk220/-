@@ -28,7 +28,7 @@ function onBodyLoad() {
 		elid("copyListButton").style.width = "30%";
 		elid("removeListButton").style.width = "29%";
 	}
-	window.onstorage = () => window.close();
+	window.onstorage = () => window.location.reload();
 }
 
 function updateLocalStorage() {
