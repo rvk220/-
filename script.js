@@ -61,7 +61,7 @@ function formatNum(num){
 	return !strNum.match(/\.00/) ? strNum : num.toString(10);
 }
 
-function elOfList(num) {
+function elOfList(num) { //!!!
 	return document.querySelector(`#prodList > li:nth-child(${num})`);
 }
 
@@ -97,7 +97,7 @@ function addToText(item = null, animateOnAdd = true) {
 	if(!item) { item = products[products.length-1]; }
 	li.innerHTML = getLiInnerHtml(item);
 	if(animateOnAdd) {
-		li.setAttribute("class", "liAnimAdd");
+		satt(li, "class", "liAnimAdd");
 	}
 	elid("prodList").appendChild(li);
 	li.ontouchstart = () => mouseDown(li);
@@ -107,7 +107,7 @@ function addToText(item = null, animateOnAdd = true) {
 }
 
 function getLiInnerHtml({ name, price, unit, cost, quantity, approx }) {
-	name = name ? name : "Неназваний продукт";
+	if (!name) { name = "Неназваний продукт"; }
 	return `${name}${(() => {
 		if (price == 0 || (quantity === '1' && unit === 'шт')) {
 			return '';
@@ -121,7 +121,7 @@ function getLiInnerHtml({ name, price, unit, cost, quantity, approx }) {
 
 let timeOut;
 function mouseDown(li) {
-	timeOut = setTimeout(() => showEditRemovePopUp(getElOfListNum(li)), 500);
+	timeOut = setTimeout(() => showEditRemovePopUp(li), 500);
 	li.style.backgroundColor='lightsteelblue';
 }
 function mouseUp(li){
@@ -131,11 +131,10 @@ function mouseUp(li){
 	setTimeout(() => li.removeAttribute("class"), 300);
 }
 
-function showEditRemovePopUp(numberInList){
-	elOfList(numberInList).style.backgroundColor='';
-	let temp = `«${elOfList(numberInList).textContent}»?`;
-	elid("addRemoveTextVariable").innerHTML = temp;
-	elid("addRemoveNumVar").innerHTML = numberInList; 	
+function showEditRemovePopUp(li){
+	li.style.backgroundColor='';
+	elid("addRemoveTextVariable").innerHTML = `«${li.textContent}»?`;
+	elid("addRemoveNumVar").innerHTML = getElOfListNum(li);	
 	clickCloseOrOpenEditRemovePopUp(false);
 }
 
@@ -223,7 +222,7 @@ function editListEntry(numberOfItemInList){
 	const item = products[numberOfItemInList*1 - 1];
     elOfList(numberOfItemInList).innerHTML =  getLiInnerHtml(item);
 	li.removeAttribute("class");
-	setTimeout(() => li.setAttribute("class", "liAnimEdit"), 4);
+	setTimeout(() => satt(li, "class", "liAnimEdit"), 4);
 }
 
 function clickRemoveButton(){
@@ -257,8 +256,7 @@ function clickCloseOrOpenEditRemovePopUp(isDelayed){
 }
 
 function changeDisplayOfEditRemovePopUp(){
-	const cl = gattid("editRemovePopUp", "class") === "smallerPopUp" ?  "smallerPopUp enabledPopUp" : "smallerPopUp";
-	sattid("editRemovePopUp", "class", cl);
+	elid('editRemovePopUp').classList.toggle('enabledPopUp');
 }
 
 function copyToClipboard(str) {
@@ -301,7 +299,7 @@ function removeFromArray(index){
 function removeFromText(numberInList){
 	const li = elOfList(numberInList);
 	li.removeAttribute("class");
-	setTimeout(() => li.setAttribute("class", "liAnimRemove"), 4);
+	setTimeout(() => satt(li, "class", "liAnimRemove"), 4);
 	setTimeout(() => elid("prodList").removeChild(li), 1000);
 }
 
@@ -310,9 +308,8 @@ function clickCloseOrOpenAddPopup(){
 	changeStateOfMainDiv(false);
 }
 
-function changeDisplayOfAddDiv(){
-	const cl = gattid("addDiv", "class") === "bigPopUp" ?  "bigPopUp enabledPopUp" : "bigPopUp";
-	sattid("addDiv", "class", cl);
+function changeDisplayOfAddDiv() {
+	elid('addDiv').classList.toggle('enabledPopUp');
 }
 
 function changeStateOfMainDiv(isDelayed){
