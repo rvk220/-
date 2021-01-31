@@ -424,7 +424,7 @@ function isInputCorrect() {
 }
 
 function copyListToClipboard() {
-	if (products.length > 0) {
+	if (products.length) {
 		copyToClipboard([].reduce.call(elid('prodList').children, (sum, { textContent }, i) => {
 			return sum += `${i + 1}) ${textContent}${i < products.length - 1 ? ';' : '.'}` + '\n';
 		}, '') + elid('sumP').textContent.toUpperCase());
