@@ -423,11 +423,11 @@ function isInputCorrect() {
 	})() : true;
 }
 
-function copyListToClipboard(){
+function copyListToClipboard() {
 	if (products.length > 0) {
-		let index = 0;
-		const arr = [...elid('prodList').children].map(li => `${++index}) ${li.textContent}`);
-		copyToClipboard(arr.join(';\n') + '.' + '\n' + elid('sumP').textContent.toUpperCase());
+		copyToClipboard([].reduce.call(elid('prodList').children, (sum, { textContent }, i) => {
+			return sum += `${i + 1}) ${textContent}${i < products.length - 1 ? ';' : '.'}` + '\n';
+		}, '') + elid('sumP').textContent.toUpperCase());
 	} else {
 		alert('Помилка: неможливо скопіювати у буфер обміну порожній список!');
 	}
