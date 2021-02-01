@@ -333,7 +333,7 @@ function clickCostOrQuantity(value) {
 		elid('costDiv').style.opacity = cd;
         elid('quantityDiv').style.opacity = qd;
 	}
-	setValues(value === 'byCost' ? [false, true, '1', '0.5'] : [true, false, 0.5, 1]);
+	setValues(value === 'byCost' ? [false, true, 1, 0.5] : [true, false, 0.5, 1]);
 	getMissingValuesOnInput();
 }
 
