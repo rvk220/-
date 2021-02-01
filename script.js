@@ -427,31 +427,27 @@ function copyListToClipboard() {
 	if (products.length) {
 		const reduce = fn => [].reduce.call(elid('prodList').children, fn, '');
 		copyToClipboard(reduce((sum, { textContent: t }, i, { length }) => {
-			return sum += `${i+1}) ${t}${i < length-1 ? ';' : '.'}` + '\n';
+			return sum += `${i + 1}) ${t}${i < length - 1 ? ';' : '.'}` + '\n';
 		}) + elid('sumP').textContent.toUpperCase());
 	} else {
 		alert('Помилка: неможливо скопіювати у буфер обміну порожній список!');
 	}
 }
 
-function changeDisplayOfCopyAndDeleteListButton(){
-	if(elid("copyListButton").style.display !== "none") {
-		elid("copyListButton").style.width = "0%";
-		elid("removeListButton").style.width = "0%";
-		elid("copyListButton").style.transform = "none";
-		elid("removeListButton").style.transform = "none";
-		setTimeout(() => {
-			elid("copyListButton").style.display = "none";
-			elid("removeListButton").style.display = "none";
-		}, 1000);
+function changeDisplayOfCopyAndDeleteListButton() {
+	const setStyleProp = (prop, val, val2 = null) => {
+		elid('copyListButton').style[prop] = val;
+		elid('removeListButton').style[prop] = val2 ? val2 : val;
+	}
+	if (elid('copyListButton').style.display !== 'none') {
+		setStyleProp('width', '0%')
+		setStyleProp('transform', 'none');
+		setTimeout(() => setStyleProp('display', 'none'), 1000);
 	} else {
-		elid("copyListButton").style.display = "block";
-		elid("removeListButton").style.display = "block";
+		setStyleProp('display', 'block');
 		setTimeout(() => {
-			elid("copyListButton").style.width = "30%";
-			elid("removeListButton").style.width = "29%";
-			elid("copyListButton").style.transform = "rotate(1turn)";
-			elid("removeListButton").style.transform = "rotate(1turn)";
+			setStyleProp('width', '30%', '29%');
+			setStyleProp('transform', 'rotate(1turn)')
 		}, 4);
 	}
 }
