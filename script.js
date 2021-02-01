@@ -425,9 +425,10 @@ function isInputCorrect() {
 
 function copyListToClipboard() {
 	if (products.length) {
-		copyToClipboard([].reduce.call(elid('prodList').children, (sum, { textContent }, i) => {
-			return sum += `${i + 1}) ${textContent}${i < products.length - 1 ? ';' : '.'}` + '\n';
-		}, '') + elid('sumP').textContent.toUpperCase());
+		const reduce = fn => [].reduce.call(elid('prodList').children, fn, '');
+		copyToClipboard(reduce((sum, { textContent: t }, i, { length }) => {
+			return sum += `${i+1}) ${t}${i < length-1 ? ';' : '.'}` + '\n';
+		}) + elid('sumP').textContent.toUpperCase());
 	} else {
 		alert('Помилка: неможливо скопіювати у буфер обміну порожній список!');
 	}
