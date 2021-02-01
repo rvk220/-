@@ -358,25 +358,23 @@ function processKeypress({ keyCode, target }) {
 
 function appendProdDataList(inputValue) {
 	const prodDataListContent = ["Абрикоси", "Апельсини", "Банани", "Бараболя", "Борошно", "Буряки", "Вермішель", "Виноград", "Вишні", "Вода", "Гречка", "Грушки", "Диня", "Зелень", "Ізюм", "Кабачки", "Кавун", "Капуста", "Капуста цвітна", "Капуста броколі", "Кефір", "Капуста брюссельська", "Корінь селери", "Корінь петрушки", "Корольок", "Кріп", "Кріп і петрушка", "Курятина", "Мандарини", "Масло", "Молоко", "Морква", "Морозиво", "М'ясо", "Насіння соняшнику", "Огірки", "Олія", "Оцет", "Пакети", "Пакети для сміття", "Перець", "Персики", "Петрушка", "Печиво", "Пластівці", "Полуниці", "Помідори", "Приправи", "Пшоно", "Редиска", "Редька", "Риба", "Рукав для запікання", "Ряжанка", "Салат", "Свинина", "Сир", "Сир-творог", "Сир плавлений", "Сік", "Сіль", "Сирки плавлені", "Сливки", "Сметана", "Сода", "Туалетний папір", "Фініки", "Халва", "Хліб", "Хурма", "Цибуля", "Цукерки", "Цукор", "Черешні", "Часник", "Шоколад", "Яблука", "Яйця", "Яловичина"];
-	if (inputValue) {
+	elid('prodDataList').innerHTML = inputValue ? (() => {
 		try {
-			const regex = new RegExp(`^${inputValue}`, "i");
-			const temp = [];
+			let result = '';
+			const regex = new RegExp(`^${inputValue}`, 'i');
 			for (const el of prodDataListContent) {
 				if (el.match(regex)) {
-					temp.push(`<option value="${el}"></option>`);
-				} else if (temp.length) {
+					result += `<option value="${el}"></option>`;
+				} else if (result) {
 					break;
 				}
 			}
-			elid("prodDataList").innerHTML = temp.join('\n');
-		} catch(e) {
-			elid("prodDataList").innerHTML = "";
+			return result;
+		} catch (e) {
 			console.warn(e.message);
+			return '';
 		}
-	} else {
-		elid("prodDataList").innerHTML = "";
-	}	
+	})() : '';
 }
 
 function getMissingValuesOnInput(){
