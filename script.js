@@ -326,22 +326,18 @@ function changeStateOfMainDiv(isDelayed){
 	}
 }
 
-function clickCostOrQuantity(value){
-    if(value === 'byCost'){
-        elid("costInput").disabled=false;
-        elid("quantityInput").disabled=true;
-        elid("quantityDiv").style.opacity="0.5";
-        elid("costDiv").style.opacity="1";
-    } else {
-		elid("costInput").disabled=true;
-        elid("quantityInput").disabled=false;
-        elid("quantityDiv").style.opacity="1";
-        elid("costDiv").style.opacity="0.5";
-    }
+function clickCostOrQuantity(value) {
+	const setValues = ([ci, qi, cd, qd]) => {
+		elid('costInput').disabled = ci;
+		elid('quantityInput').disabled = qi;
+		elid('costDiv').style.opacity = cd;
+        elid('quantityDiv').style.opacity = qd;
+	}
+	setValues(value === 'byCost' ? [false, true, '1', '0.5'] : [true, false, 0.5, 1]);
 	getMissingValuesOnInput();
 }
 
-function eraseInput(){
+function eraseInput() {
     elid("nameInput").value = "";
     elid("priceInput").value = "";
     elid("costInput").value = "";
