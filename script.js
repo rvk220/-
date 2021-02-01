@@ -447,7 +447,7 @@ function changeDisplayOfCopyAndDeleteListButton() {
 		setStyleProp('display', 'block');
 		setTimeout(() => {
 			setStyleProp('width', '30%', '29%');
-			setStyleProp('transform', 'rotate(1turn)')
+			setStyleProp('transform', 'rotate(1turn)');
 		}, 4);
 	}
 }
