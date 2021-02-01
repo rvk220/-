@@ -348,19 +348,15 @@ function eraseInput(){
     elid("quantityInput").value = "";
 }
 
-function processKeypress(keyCode, nameInput) {
-	if (keyCode !== 13) {
-		if (nameInput === undefined) {
-			getMissingValuesOnInput();
-		} else {
-			if (keyCode === undefined) {
-				elid("nameInput").blur();
-			} else {
-				appendProdDataList(nameInput);
-			}
-		}
-	} else {
+function processKeypress({ keyCode, target }) {
+	if (keyCode === 13) {
 		clickConfirmButton();
+	} else if (target !== elid('nameInput')) {
+		getMissingValuesOnInput();
+	} else if (keyCode) {
+		appendProdDataList(target.value);
+	} else {
+		target.blur();
 	}
 }
 
