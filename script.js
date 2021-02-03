@@ -100,10 +100,10 @@ function addToText(item = null, animateOnAdd = true) {
 		satt(li, "class", "liAnimAdd");
 	}
 	elid("prodList").appendChild(li);
-	li.ontouchstart = () => mouseDown(li);
-	li.onmousedown = () => mouseDown(li);
-	li.ontouchend = () => mouseUp(li);
-	li.onmouseup = () => mouseUp(li);
+	li.ontouchstart = () => onTouchStart(li);
+	li.onmousedown = () => onTouchStart(li);
+	li.ontouchend = () => onTouchEnd(li);
+	li.onmouseup = () => onTouchEnd(li);
 }
 
 function getLiInnerHtml({ name, price, unit, cost, quantity, approx }) {
@@ -120,11 +120,11 @@ function getLiInnerHtml({ name, price, unit, cost, quantity, approx }) {
 }
 
 let timeOut;
-function mouseDown(li) {
+function onTouchStart(li) {
 	timeOut = setTimeout(() => showEditRemovePopUp(li), 500);
 	li.style.backgroundColor='lightsteelblue';
 }
-function mouseUp(li){
+function onTouchEnd(li){
 	clearTimeout(timeOut);
 	satt(li, "class", "liAnimTouchEnd");
 	li.style.backgroundColor='';
@@ -363,8 +363,8 @@ function appendProdDataList(inputValue) {
 	elid('prodDataList').innerHTML = inputValue ? (() => {
 		let result = '';
 		inputValue = inputValue.toLowerCase();
-		for (const [value, html] of options) {
-			if (!value.indexOf(inputValue)) {
+		for (const [optionValue, html] of options) {
+			if (!optionValue.indexOf(inputValue)) {
 				result += html;
 			} else if (result) {
 				break;
@@ -415,7 +415,7 @@ function copyListToClipboard() {
 	if (products.length) {
 		const reduce = fn => [].reduce.call(elid('prodList').children, fn, '');
 		copyToClipboard(reduce((sum, { textContent: t }, i, { length }) => {
-			return sum += `${i + 1}) ${t}${i < length - 1 ? ';' : '.'}` + '\n';
+			return sum += `${i + 1}) ${t}${i < length - 1 ? ';' : '.'}${'\n'}`;
 		}) + elid('sumP').textContent.toUpperCase());
 	} else {
 		alert('Помилка: неможливо скопіювати у буфер обміну порожній список!');
