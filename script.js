@@ -364,7 +364,7 @@ function appendProdDataList(inputValue) {
 			const regex = new RegExp(`^${inputValue}`, 'i'); // throws SyntaxError: Invalid regular expression
 			for (var i = 0, result = ''; i < hints.length; i++) {
 				if (hints[i].match(regex)) {
-					result += `<option value="${hints[i]}"></option>`;
+					result += `<option value="${hints[i]}">`;
 				} else if (result) {
 					break;
 				}
@@ -377,7 +377,7 @@ function appendProdDataList(inputValue) {
 	})() : '';
 }
 
-function getMissingValuesOnInput(){
+function getMissingValuesOnInput() {
     const price = elid("priceInput");
     const cost = elid("costInput");
 	const quant = elid("quantityInput");
@@ -389,6 +389,7 @@ function getMissingValuesOnInput(){
 	}
 	setPlaceholdersAndApprox();
 }
+const calcOnPaste = () => setTimeout(getMissingValuesOnInput, 20);
 
 function setPlaceholdersAndApprox() {
 	const price = elid("priceInput");
