@@ -47,16 +47,16 @@
         </div>
         <div class="inputContainer">
             <label for="priceInput">Ціна (грн/<span id="smallUnitSpan">кг</span>):</label></br>
-            <input type="number" id="priceInput" placeholder = "не обов'язково" onkeyup="processKeypress(event)" onpaste="getMissingValuesOnInput()"></input>
+            <input type="number" id="priceInput" placeholder = "не обов'язково" onkeyup="processKeypress(event)" onpaste="calcOnPaste()"></input>
         </div>
         <div id="quantityDiv" class="inputContainer" style="opacity:0.5;">
             <label for="quantityInput">Кількість (<span id="smallUnitSpan2">кг</span>):</label></br>
-            <input type="number" id="quantityInput" disabled="true"; onkeyup="processKeypress(event)" onpaste="getMissingValuesOnInput()"></input>
+            <input type="number" id="quantityInput" disabled="true"; onkeyup="processKeypress(event)" onpaste="calcOnPaste()"></input>
             <input type="text" id="approx" style="display:none;"value=""></input>
         </div>
         <div class="inputContainer" id="costDiv" display="">
             <label for="costInput">Вартість:</label></br>
-            <input type="number" id="costInput" onkeyup="processKeypress(event)" onpaste="getMissingValuesOnInput()"> </input>
+            <input type="number" id="costInput" onkeyup="processKeypress(event)" onpaste="calcOnPaste()"> </input>
         </div>
         <div class="centeredContent">
 			<img id="close1" src="close3.png" class="closeIconButton" onclick="clickCloseOrOpenAddPopup()"><img>
