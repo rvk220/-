@@ -18,11 +18,7 @@ function onBodyLoad() {
 			addToText(prod, false);
 			return tempSum + +prod.cost;
 		}, 0);
-		elid("sumP").style.display = "block";
-		elid("copyListButton").style.display = "block";
-		elid("removeListButton").style.display = "block";
-		elid("copyListButton").style.width = "30%";
-		elid("removeListButton").style.width = "29%";
+		changeDisplayOfSumAndBottomButtons(false);
 	}
 	window.onstorage = () => window.location.reload();
 }
@@ -50,8 +46,7 @@ function deleteAll() {
 			changeStateOfMainDiv(false);
 			elid('prodList').classList.remove("liAnimRemove");
 		}, 1000);
-		elid("sumP").style.display = "none";
-		changeDisplayOfCopyAndDeleteListButton();
+		changeDisplayOfSumAndBottomButtons();
 	}
 }
 
@@ -144,8 +139,7 @@ function confirmEdit(numberOfItemInList) {
 function confirmAdd() {
 	if (isInputCorrect()) {
 		if (!products.length) {
-			elid("sumP").style.display = "block";
-			changeDisplayOfCopyAndDeleteListButton();
+			changeDisplayOfSumAndBottomButtons();
 		}
 		clickCloseOrOpenAddPopup();
 		addToArray();
@@ -219,8 +213,7 @@ function clickRemoveButton(){
 		removeFromArray(index);
 		removeFromText(numberInList);
 		if (!products.length) {
-			elid("sumP").style.display = "none";
-			changeDisplayOfCopyAndDeleteListButton();
+			changeDisplayOfSumAndBottomButtons();
 		}
 		clickCloseOrOpenEditRemovePopUp(true);
 		localStorage.setItem('prodExpArr', JSON.stringify(products));
@@ -406,20 +399,23 @@ function copyListToClipboard() {
 	}
 }
 
-function changeDisplayOfCopyAndDeleteListButton() {
+function changeDisplayOfSumAndBottomButtons(animateOnUnhide = true) {
 	const setStyleProp = (prop, val, val2 = null) => {
 		elid('copyListButton').style[prop] = val;
 		elid('removeListButton').style[prop] = val2 ? val2 : val;
 	}
 	if (elid('copyListButton').style.display !== 'none') {
+		elid("sumP").style.display = "none";
 		setStyleProp('width', '0%')
 		setStyleProp('transform', 'none');
 		setTimeout(() => setStyleProp('display', 'none'), 1000);
 	} else {
+		elid("sumP").style.display = "block";
 		setStyleProp('display', 'block');
-		setTimeout(() => {
+		const doNext = () => {
 			setStyleProp('width', '30%', '29%');
 			setStyleProp('transform', 'rotate(1turn)');
-		}, 4);
+		}
+		animateOnUnhide ? setTimeout(doNext, 4) : doNext();
 	}
 }
