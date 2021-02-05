@@ -3,25 +3,23 @@ const satt = (el, attr, val) => el.setAttribute(attr, val);
 const sattid = (id, attr, val) => satt(elid(id), attr, val);
 const gattid = (id, attr) => elid(id).getAttribute(attr);
 
-function Prod (name, price, unit, approx, quantity, cost){
-	this.name = name.trim();
-	this.price = price ? price : "";
-	this.cost = cost;
-	this.unit = unit.trim();
-	this.quantity = (!quantity && price) ? "1" : quantity;
-	this.approx = approx;
-}
-
 var products = JSON.parse(localStorage.getItem('prodExpArr') || "[]");
-var sum = 0;
+const sum = {
+	rawNumberValue: 0,
+	set value(num) {
+		this.rawNumberValue = num;
+		const strNum = num.toFixed(2);
+		elid("sumSpan").innerHTML = strNum.match(/\.00/) ? num.toString(10) : strNum;
+	},
+	get value() { return this.rawNumberValue; }
+}
 
 function onBodyLoad() {
 	if (products.length) {
-		products.forEach(prod => {
+		sum.value = products.reduce((tempSum, prod) => {
 			addToText(prod, false);
-			sum += Number(prod.cost);
-		});
-		elid("sumSpan").innerHTML = sum;
+			return tempSum + +prod.cost;
+		}, 0);
 		elid("sumP").style.display = "block";
 		elid("copyListButton").style.display = "block";
 		elid("removeListButton").style.display = "block";
@@ -31,12 +29,23 @@ function onBodyLoad() {
 	window.onstorage = () => window.location.reload();
 }
 
+function getArrayItemFromInput() {
+    const unit = gattid("radioContainer1", "data-unit");
+    const name = elid("nameInput").value.trim();
+    const price = trimNumericInput(elid("priceInput").value, 'price');
+    const approx = elid("approx").value;
+	let quantity = trimNumericInput(elid("quantityInput").value, 'quantity');
+	const cost = trimNumericInput(elid("costInput").value, 'cost');
+	if (!quantity && price) { quantity = 1; }
+	return { name, price, unit, approx, quantity, cost };
+}
+
 function deleteAll() {
 	if (confirm('Ви справді бажаєте видалити весь збережений список?')) {
 		changeStateOfMainDiv(false);
 		localStorage.removeItem('prodExpArr');
 		products = [];
-		sum = 0;
+		sum.value = 0;
 		elid('prodList').classList.add("liAnimRemove");
 		setTimeout(() => {
 			elid('prodList').innerHTML = "";
@@ -48,12 +57,7 @@ function deleteAll() {
 	}
 }
 
-function formatNum(num){
-	const strNum = num.toFixed(2);
-	return !strNum.match(/\.00/) ? strNum : num.toString(10);
-}
-
-function elOfList(num) { //!!!
+function elOfList(num) {
 	return document.querySelector(`#prodList > li:nth-child(${num})`);
 }
 
@@ -66,17 +70,7 @@ function getElOfListNum(clickedLi) {
 	console.error('could not get elOfList number!');
 }
 
-const getArrayItemFromInput = () => {
-    const unit = gattid("radioContainer1", "data-unit");
-    const name = elid("nameInput").value;
-    const price = trimNumericInput(elid("priceInput").value, 'price');
-    const approx = elid("approx").value;
-    const quantity = trimNumericInput(elid("quantityInput").value, 'quantity');
-    const cost = trimNumericInput(elid("costInput").value, 'cost');
-	return new Prod(name, price, unit, approx, quantity, cost);
-}
-
-function addToArray(){
+function addToArray() {
 	products.push(getArrayItemFromInput());
 }
 
@@ -134,31 +128,31 @@ function clickConfirmButton(){
 	if(elid("addRemoveNumVar").innerHTML. match(/add/)) {
 		confirmAdd();
 	} else {
-		confirmEdit(elid("addRemoveNumVar").innerHTML);
+		confirmEdit(+elid("addRemoveNumVar").innerHTML);
 	}
 	localStorage.setItem('prodExpArr', JSON.stringify(products));
 }
 
-function confirmEdit(numberOfItemInList){ 
+function confirmEdit(numberOfItemInList) { 
 	if(isInputCorrect()){
-		const index = numberOfItemInList*1-1;
-		elid("sumSpan").innerHTML = formatNum(sum -= (products[index].cost - elid("costInput").value));
+		const index = numberOfItemInList-1;
+		sum.value -= products[index].cost - elid("costInput").value;
 		editInArray(index);
 		editListEntry(numberOfItemInList);
 		clickCloseOrOpenAddPopup();
 	}
 }
 
-function confirmAdd(){
-	if(isInputCorrect()){
-		if(!sum) {
+function confirmAdd() {
+	if (isInputCorrect()) {
+		if (!products.length) {
 			elid("sumP").style.display = "block";
 			changeDisplayOfCopyAndDeleteListButton();
 		}
-     clickCloseOrOpenAddPopup();
-     addToArray();
-     addToText();
-     elid("sumSpan").innerHTML = formatNum(sum += 1*products[products.length-1].cost);
+		clickCloseOrOpenAddPopup();
+		addToArray();
+		addToText();
+		sum.value += +products[products.length-1].cost;
 	}
 }
 
@@ -188,9 +182,9 @@ function trimNumericInput(strNum, inputType) {
 }
 
 function clickEditButton() {
-	const numberOfItemInList = elid('addRemoveNumVar').innerHTML;
-	elid("h2").innerHTML="Ред. прод. №" + numberOfItemInList;
-	const {name, price, unit, approx, quantity, cost} = products[1*numberOfItemInList-1];
+	const numberOfItemInList = +elid('addRemoveNumVar').innerHTML;
+	elid("h2").innerHTML = `Ред. прод. №${numberOfItemInList}`;
+	const {name, price, unit, approx, quantity, cost} = products[numberOfItemInList - 1];
 	clickCloseOrOpenAddPopup();
 	clickCloseOrOpenEditRemovePopUp(false);
 	elid((unit.match(/шт/) || approx) ?  'byCost' : 'byQuantity').click();
@@ -211,22 +205,22 @@ function clickEditButton() {
 
 function editListEntry(numberOfItemInList){
 	const li = elOfList(numberOfItemInList);
-	const item = products[numberOfItemInList*1 - 1];
+	const item = products[numberOfItemInList - 1];
     elOfList(numberOfItemInList).innerHTML =  getLiInnerHtml(item);
 	li.removeAttribute("class");
 	setTimeout(() => satt(li, "class", "liAnimEdit"), 4);
 }
 
 function clickRemoveButton(){
-	const numberInList = elid('addRemoveNumVar').innerHTML;
+	const numberInList = +elid('addRemoveNumVar').innerHTML;
 	const warning = "Ви впевнені, що бажаєте вилучити зі списку продукт " +
 	elid("addRemoveTextVariable").innerHTML + "?"
 	if(confirm(warning)) {
-		const index = (1*numberInList)-1;
-		elid("sumSpan").innerHTML = formatNum(sum -= 1*products[index].cost);
+		const index = numberInList-1;
+		sum.value -= +products[index].cost;
 		removeFromArray(index);
 		removeFromText(numberInList);
-		if (!sum) {
+		if (!products.length) {
 			elid("sumP").style.display = "none";
 			changeDisplayOfCopyAndDeleteListButton();
 		}
@@ -343,7 +337,7 @@ function processKeypress({ keyCode, target }) {
 		getMissingValuesOnInput();
 	} else if (keyCode) {
 		appendProdDataList(target.value);
-	} else { // if a datalist entry is selected
+	} else { // if a datalist option is selected
 		target.blur();
 	}
 }
@@ -372,9 +366,9 @@ function getMissingValuesOnInput() {
 	const quant = elid("quantityInput");
 	const [pv, cv, qv] = [price.value, cost.value, quant.value];
 	if (cost.disabled) {
-		cost.value = !pv ? '' : (qv ? 1 * (pv * qv).toFixed(2) : 1*pv);
+		cost.value = !pv ? '' : (qv ? +(pv * qv).toFixed(2) : +pv);
 	} else {
-		quant.value = !cv ? '' : (pv == 0 ? '' :  1 * (cv / pv).toFixed(2));
+		quant.value = !cv ? '' : (pv == 0 ? '' :  +(cv / pv).toFixed(2));
 	}
 	setPlaceholdersAndApprox();
 }
@@ -406,8 +400,8 @@ function isInputCorrect() {
 function copyListToClipboard() {
 	if (products.length) {
 		const reduce = fn => [].reduce.call(elid('prodList').children, fn, '');
-		copyToClipboard(reduce((sum, { textContent: t }, i, { length }) => {
-			return sum += `${i + 1}) ${t}${i < length - 1 ? ';' : '.'}${'\n'}`;
+		copyToClipboard(reduce((acc, { textContent: t }, i, { length }) => {
+			return acc += `${i + 1}) ${t}${i < length - 1 ? ';' : '.'}${'\n'}`;
 		}) + elid('sumP').textContent.toUpperCase());
 	} else {
 		alert('Помилка: неможливо скопіювати у буфер обміну порожній список!');
