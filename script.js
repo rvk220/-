@@ -14,10 +14,18 @@ function Prod (name, price, unit, approx, quantity, cost){
 var products = [];
 var sum = 0;
 
+const storage = {
+	retrieve: () => JSON.parse(localStorage.getItem('prodExpListData') || "null"),
+	clear: () => localStorage.removeItem('prodExpListData'),
+	update: function() {
+		const u = () => localStorage.setItem('prodExpListData', JSON.stringify({ products, sum }));
+		return products.length ? u() : this.clear();
+	}
+}
+
 function onBodyLoad() {
-	const raw = localStorage.getItem('prodExpListData');
-	if (raw) {
-		const data = JSON.parse(raw);
+	const data = storage.retrieve();
+	if (data) {
 		products = data.products;
 		sum = data.sum;
 		products.forEach(prod => addToText(prod, false));
@@ -31,18 +39,10 @@ function onBodyLoad() {
 	window.onstorage = () => window.location.reload();
 }
 
-function updateLocalStorage() {
-	if(products.length) {
-		localStorage.setItem('prodExpListData', JSON.stringify({ products, sum }));
-	} else {
-		localStorage.removeItem('prodExpListData');
-	}
-}
-
 function deleteAll() {
 	if (confirm('Ви справді бажаєте видалити весь збережений список?')) {
 		changeStateOfMainDiv(false);
-		localStorage.removeItem('prodExpListData');
+		storage.clear();
 		products = [];
 		sum = 0;
 		elid('prodList').classList.add("liAnimRemove");
@@ -144,7 +144,7 @@ function clickConfirmButton(){
 	} else {
 		confirmEdit(elid("addRemoveNumVar").innerHTML);
 	}
-	updateLocalStorage();
+	storage.update();
 }
 
 function confirmEdit(numberOfItemInList){ 
@@ -239,7 +239,7 @@ function clickRemoveButton(){
 			changeDisplayOfCopyAndDeleteListButton();
 		}
 		clickCloseOrOpenEditRemovePopUp(true);
-		updateLocalStorage();
+		storage.update();
 	} else {
 		clickCloseOrOpenEditRemovePopUp(false);
 	}
