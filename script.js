@@ -9,7 +9,7 @@ const sum = {
 		const strNum = num.toFixed(2);
 		elid("sumSpan").innerHTML = strNum.match(/\.00/) ? num.toString(10) : strNum;
 	},
-	get value() { return +elid("sumSpan").innerHTML; }
+	get value() { return +elid("sumSpan").innerHTML; },
 }
 
 function onBodyLoad() {
@@ -143,7 +143,7 @@ function confirmEdit(numberOfItemInList) {
 
 function confirmAdd() {
 	if (isInputCorrect()) {
-		if (!sum.value) {
+		if (!products.length) {
 			elid("sumP").style.display = "block";
 			changeDisplayOfCopyAndDeleteListButton();
 		}
@@ -218,7 +218,7 @@ function clickRemoveButton(){
 		sum.value -= +products[index].cost;
 		removeFromArray(index);
 		removeFromText(numberInList);
-		if (!sum.value) {
+		if (!products.length) {
 			elid("sumP").style.display = "none";
 			changeDisplayOfCopyAndDeleteListButton();
 		}
