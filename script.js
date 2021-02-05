@@ -11,24 +11,23 @@ function Prod (name, price, unit, approx, quantity, cost){
 	this.quantity = (!quantity && price) ? "1" : quantity;
 	this.approx = approx;
 }
-var products = [];
+
+var products;
 var sum = 0;
 
 const storage = {
-	retrieve: () => JSON.parse(localStorage.getItem('prodExpListData') || "null"),
-	clear: () => localStorage.removeItem('prodExpListData'),
-	update: function() {
-		const u = () => localStorage.setItem('prodExpListData', JSON.stringify({ products, sum }));
-		return products.length ? u() : this.clear();
-	}
+	retrieve: () => JSON.parse(localStorage.getItem('prodExpArr') || "[]"),
+	clear: () => localStorage.removeItem('prodExpArr'),
+	update: () => localStorage.setItem('prodExpArr', JSON.stringify(products))
 }
 
 function onBodyLoad() {
-	const data = storage.retrieve();
-	if (data) {
-		products = data.products;
-		sum = data.sum;
-		products.forEach(prod => addToText(prod, false));
+	products = storage.retrieve();
+	if (products.length) {
+		products.forEach(prod => {
+			addToText(prod, false);
+			sum += Number(prod.cost);
+		});
 		elid("sumSpan").innerHTML = sum;
 		elid("sumP").style.display = "block";
 		elid("copyListButton").style.display = "block";
