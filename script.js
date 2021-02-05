@@ -5,13 +5,11 @@ const gattid = (id, attr) => elid(id).getAttribute(attr);
 
 var products = JSON.parse(localStorage.getItem('prodExpArr') || "[]");
 const sum = {
-	rawNumberValue: 0,
 	set value(num) {
-		this.rawNumberValue = num;
 		const strNum = num.toFixed(2);
 		elid("sumSpan").innerHTML = strNum.match(/\.00/) ? num.toString(10) : strNum;
 	},
-	get value() { return this.rawNumberValue; }
+	get value() { return +elid("sumSpan").innerHTML; }
 }
 
 function onBodyLoad() {
