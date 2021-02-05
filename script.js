@@ -12,17 +12,10 @@ function Prod (name, price, unit, approx, quantity, cost){
 	this.approx = approx;
 }
 
-var products;
+var products = JSON.parse(localStorage.getItem('prodExpArr') || "[]");
 var sum = 0;
 
-const storage = {
-	retrieve: () => JSON.parse(localStorage.getItem('prodExpArr') || "[]"),
-	clear: () => localStorage.removeItem('prodExpArr'),
-	update: () => localStorage.setItem('prodExpArr', JSON.stringify(products))
-}
-
 function onBodyLoad() {
-	products = storage.retrieve();
 	if (products.length) {
 		products.forEach(prod => {
 			addToText(prod, false);
@@ -41,7 +34,7 @@ function onBodyLoad() {
 function deleteAll() {
 	if (confirm('Ви справді бажаєте видалити весь збережений список?')) {
 		changeStateOfMainDiv(false);
-		storage.clear();
+		localStorage.removeItem('prodExpArr');
 		products = [];
 		sum = 0;
 		elid('prodList').classList.add("liAnimRemove");
@@ -143,7 +136,7 @@ function clickConfirmButton(){
 	} else {
 		confirmEdit(elid("addRemoveNumVar").innerHTML);
 	}
-	storage.update();
+	localStorage.setItem('prodExpArr', JSON.stringify(products));
 }
 
 function confirmEdit(numberOfItemInList){ 
@@ -228,7 +221,7 @@ function clickRemoveButton(){
 	const numberInList = elid('addRemoveNumVar').innerHTML;
 	const warning = "Ви впевнені, що бажаєте вилучити зі списку продукт " +
 	elid("addRemoveTextVariable").innerHTML + "?"
-	if(confirm(warning)){
+	if(confirm(warning)) {
 		const index = (1*numberInList)-1;
 		elid("sumSpan").innerHTML = formatNum(sum -= 1*products[index].cost);
 		removeFromArray(index);
@@ -238,7 +231,7 @@ function clickRemoveButton(){
 			changeDisplayOfCopyAndDeleteListButton();
 		}
 		clickCloseOrOpenEditRemovePopUp(true);
-		storage.update();
+		localStorage.setItem('prodExpArr', JSON.stringify(products));
 	} else {
 		clickCloseOrOpenEditRemovePopUp(false);
 	}
