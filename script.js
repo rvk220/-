@@ -15,7 +15,7 @@ var products = [];
 var sum = 0;
 
 function onBodyLoad() {
-	const raw = localStorage.getItem('data');
+	const raw = localStorage.getItem('prodExpListData');
 	if (raw) {
 		const data = JSON.parse(raw);
 		products = data.products;
@@ -33,16 +33,16 @@ function onBodyLoad() {
 
 function updateLocalStorage() {
 	if(products.length) {
-		localStorage.setItem('data', JSON.stringify({ products, sum }));
+		localStorage.setItem('prodExpListData', JSON.stringify({ products, sum }));
 	} else {
-		localStorage.removeItem('data');
+		localStorage.removeItem('prodExpListData');
 	}
 }
 
 function deleteAll() {
 	if (confirm('Ви справді бажаєте видалити весь збережений список?')) {
 		changeStateOfMainDiv(false);
-		localStorage.removeItem('data');
+		localStorage.removeItem('prodExpListData');
 		products = [];
 		sum = 0;
 		elid('prodList').classList.add("liAnimRemove");
