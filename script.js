@@ -145,7 +145,7 @@ function confirmEdit(numberOfItemInList) {
 
 function confirmAdd() {
 	if (isInputCorrect()) {
-		if (!products.length) {
+		if (!sum.value) {
 			elid("sumP").style.display = "block";
 			changeDisplayOfCopyAndDeleteListButton();
 		}
@@ -220,7 +220,7 @@ function clickRemoveButton(){
 		sum.value -= +products[index].cost;
 		removeFromArray(index);
 		removeFromText(numberInList);
-		if (!products.length) {
+		if (!sum.value) {
 			elid("sumP").style.display = "none";
 			changeDisplayOfCopyAndDeleteListButton();
 		}
