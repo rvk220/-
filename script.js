@@ -3,7 +3,19 @@ const satt = (el, attr, val) => el.setAttribute(attr, val);
 const sattid = (id, attr, val) => satt(elid(id), attr, val);
 const gattid = (id, attr) => elid(id).getAttribute(attr);
 
-var products = JSON.parse(localStorage.getItem('prodExpArr') || '[]');
+var products = (() => {
+	try {
+		const parsed = JSON.parse(localStorage.getItem('prodExpArr'));
+		if (parsed instanceof Array) {
+			return parsed;
+		} else if(parsed) {
+			throw new Error('JSON parsed is not an array');
+		}
+	} catch (err) {
+		console.warn(`An error was caught: "${err.message}". Invalid localStorage data was removed.`);
+		localStorage.removeItem('prodExpArr');
+	}
+})() || [];
 const sum = {
 	set value(num) {
 		elid('sumSpan').innerHTML = Number.isInteger(num) ? num : num.toFixed(2);
