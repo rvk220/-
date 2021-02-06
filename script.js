@@ -24,10 +24,10 @@ function onBodyLoad() {
 }
 
 function getArrayItemFromInput() {
-    const unit = gattid("radioContainer1", "data-unit");
-    const name = elid("nameInput").value.trim();
-    const price = trimNumericInput(elid("priceInput").value, 'price');
-    const approx = elid("approx").value;
+	const unit = gattid("radioContainer1", "data-unit");
+	const name = elid("nameInput").value.trim();
+	const price = trimNumericInput(elid("priceInput").value, 'price');
+	const approx = elid("approx").value;
 	let quantity = trimNumericInput(elid("quantityInput").value, 'quantity');
 	const cost = trimNumericInput(elid("costInput").value, 'cost');
 	if (!quantity && price) { quantity = 1; }
@@ -190,8 +190,8 @@ function clickEditButton() {
 	}
 	elid("quantityInput").value = quantity; 
 	elid("nameInput").value = name;
-    elid("priceInput").value = price;
-    elid("costInput").value = cost;
+	elid("priceInput").value = price;
+	elid("costInput").value = cost;
 	setPlaceholdersAndApprox();
 }
 
@@ -308,17 +308,17 @@ function clickCostOrQuantity(value) {
 		elid('costInput').disabled = ci;
 		elid('quantityInput').disabled = qi;
 		elid('costDiv').style.opacity = cd;
-        elid('quantityDiv').style.opacity = qd;
+		elid('quantityDiv').style.opacity = qd;
 	}
 	setValues(value === 'byCost' ? [false, true, 1, 0.5] : [true, false, 0.5, 1]);
 	getMissingValuesOnInput();
 }
 
 function eraseInput() {
-    elid("nameInput").value = "";
-    elid("priceInput").value = "";
-    elid("costInput").value = "";
-    elid("quantityInput").value = "";
+	elid("nameInput").value = "";
+	elid("priceInput").value = "";
+	elid("costInput").value = "";
+	elid("quantityInput").value = "";
 }
 
 function processKeypress({ keyCode, target }) {
@@ -352,8 +352,8 @@ function appendProdDataList(inputValue) {
 }
 
 function getMissingValuesOnInput() {
-    const price = elid("priceInput");
-    const cost = elid("costInput");
+	const price = elid("priceInput");
+	const cost = elid("costInput");
 	const quant = elid("quantityInput");
 	const [pv, cv, qv] = [price.value, cost.value, quant.value];
 	if (cost.disabled) {
