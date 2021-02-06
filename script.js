@@ -6,8 +6,8 @@ const gattid = (id, attr) => elid(id).getAttribute(attr);
 var products = JSON.parse(localStorage.getItem('prodExpArr') || "[]");
 const sum = {
 	set value(num) {
-		const strNum = num.toFixed(2);
-		elid("sumSpan").innerHTML = strNum.match(/\.00/) ? num.toString(10) : strNum;
+		const s = n => elid("sumSpan").innerHTML = n;
+		s(Number.isInteger(num) ? num : num.toFixed(2));
 	},
 	get value() { return +elid("sumSpan").innerHTML; },
 }
