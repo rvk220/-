@@ -3,14 +3,13 @@ const satt = (el, attr, val) => el.setAttribute(attr, val);
 const sattid = (id, attr, val) => satt(elid(id), attr, val);
 const gattid = (id, attr) => elid(id).getAttribute(attr);
 
-var products = JSON.parse(localStorage.getItem('prodExpArr') || "[]");
+var products = JSON.parse(localStorage.getItem('prodExpArr') || '[]');
 const sum = {
 	set value(num) {
-		const isInt = Number.isInteger(num);
-		elid("sumSpan").innerHTML = isInt ? num : num.toFixed(2);
+		elid('sumSpan').innerHTML = Number.isInteger(num) ? num : num.toFixed(2);
 	},
-	get value() { return +elid("sumSpan").innerHTML; },
-}
+	get value() { return +elid('sumSpan').innerHTML; },
+};
 
 function onBodyLoad() {
 	if (products.length) {
@@ -24,12 +23,12 @@ function onBodyLoad() {
 }
 
 function getArrayItemFromInput() {
-	const unit = gattid("radioContainer1", "data-unit");
-	const name = elid("nameInput").value.trim();
-	const price = trimNumericInput(elid("priceInput").value, 'price');
-	const approx = elid("approx").value;
-	let quantity = trimNumericInput(elid("quantityInput").value, 'quantity');
-	const cost = trimNumericInput(elid("costInput").value, 'cost');
+	const unit = gattid('radioContainer1', 'data-unit');
+	const name = elid('nameInput').value.trim();
+	const price = trimNumericInput(elid('priceInput').value, 'price');
+	const approx = elid('approx').value;
+	let quantity = trimNumericInput(elid('quantityInput').value, 'quantity');
+	const cost = trimNumericInput(elid('costInput').value, 'cost');
 	if (!quantity && price) { quantity = 1; }
 	return { name, price, unit, approx, quantity, cost };
 }
@@ -40,11 +39,11 @@ function deleteAll() {
 		localStorage.removeItem('prodExpArr');
 		products = [];
 		sum.value = 0;
-		elid('prodList').classList.add("liAnimRemove");
+		elid('prodList').classList.add('liAnimRemove');
 		setTimeout(() => {
-			elid('prodList').innerHTML = "";
+			elid('prodList').innerHTML = '';
 			changeStateOfMainDiv(false);
-			elid('prodList').classList.remove("liAnimRemove");
+			elid('prodList').classList.remove('liAnimRemove');
 		}, 1000);
 		changeDisplayOfSumAndBottomButtons();
 	}
@@ -72,13 +71,13 @@ function editInArray(index) {
 }
 
 function addToText(item = null, animateOnAdd = true) {
-	let li = document.createElement("li");
+	let li = document.createElement('li');
 	if(!item) { item = products[products.length-1]; }
 	li.innerHTML = getLiInnerHtml(item);
 	if(animateOnAdd) {
-		satt(li, "class", "liAnimAdd");
+		satt(li, 'class', 'liAnimAdd');
 	}
-	elid("prodList").appendChild(li);
+	elid('prodList').appendChild(li);
 	li.ontouchstart = () => onTouchStart(li);
 	li.onmousedown = () => onTouchStart(li);
 	li.ontouchend = () => onTouchEnd(li);
@@ -86,7 +85,7 @@ function addToText(item = null, animateOnAdd = true) {
 }
 
 function getLiInnerHtml({ name, price, unit, cost, quantity, approx }) {
-	if (!name) { name = "Неназваний продукт"; }
+	if (!name) { name = 'Неназваний продукт'; }
 	return `${name}${(() => {
 		if (price == 0 || (quantity === '1' && unit === 'шт')) {
 			return '';
@@ -105,23 +104,23 @@ function onTouchStart(li) {
 }
 function onTouchEnd(li){
 	clearTimeout(timeOut);
-	satt(li, "class", "liAnimTouchEnd");
+	satt(li, 'class', 'liAnimTouchEnd');
 	li.style.backgroundColor='';
-	setTimeout(() => li.removeAttribute("class"), 300);
+	setTimeout(() => li.removeAttribute('class'), 300);
 }
 
 function showEditRemovePopUp(li){
 	li.style.backgroundColor='';
-	elid("addRemoveTextVariable").innerHTML = `«${li.textContent}»?`;
-	elid("addRemoveNumVar").innerHTML = getElOfListNum(li);	
+	elid('addRemoveTextVariable').innerHTML = `«${li.textContent}»?`;
+	elid('addRemoveNumVar').innerHTML = getElOfListNum(li);	
 	clickCloseOrOpenEditRemovePopUp(false);
 }
 
 function clickConfirmButton(){
-	if(elid("addRemoveNumVar").innerHTML. match(/add/)) {
+	if(elid('addRemoveNumVar').innerHTML. match(/add/)) {
 		confirmAdd();
 	} else {
-		confirmEdit(+elid("addRemoveNumVar").innerHTML);
+		confirmEdit(+elid('addRemoveNumVar').innerHTML);
 	}
 	localStorage.setItem('prodExpArr', JSON.stringify(products));
 }
@@ -129,8 +128,9 @@ function clickConfirmButton(){
 function confirmEdit(numberOfItemInList) { 
 	if(isInputCorrect()){
 		const index = numberOfItemInList-1;
-		sum.value -= products[index].cost - elid("costInput").value;
+		const exCost = products[index].cost;
 		editInArray(index);
+		sum.value += products[index].cost - exCost;
 		editListEntry(numberOfItemInList);
 		clickCloseOrOpenAddPopup();
 	}
