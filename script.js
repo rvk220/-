@@ -5,11 +5,11 @@ const gattid = (id, attr) => elid(id).getAttribute(attr);
 
 var products = (() => {
 	try {
-		const parsed = JSON.parse(localStorage.getItem('prodExpArr') || '[]');
-		if (parsed instanceof Array) {
-			return parsed;
+		const parsed = JSON.parse(localStorage.getItem('prodExpArr'));
+		if(parsed && !(parsed instanceof Array)) {
+			throw new Error('JSON parsed is not an array');
 		}
-		throw new Error('JSON parsed is not an array');
+		return parsed;
 	} catch (err) {
 		console.warn(`An error was caught: "${err.message}". Invalid localStorage data was removed.`);
 		localStorage.removeItem('prodExpArr');
@@ -27,7 +27,7 @@ function onBodyLoad() {
 	if (products.length) {
 		sum.value = products.reduce((tempSum, prod) => {
 			addToText(prod, false);
-			return +prod.cost + tempSum;
+			return Number(prod.cost) + tempSum;
 		}, 0);
 		changeDisplayOfSumAndBottomButtons(false);
 	}
