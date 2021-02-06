@@ -20,7 +20,7 @@ const sum = {
 	set value(num) {
 		elid('sumSpan').innerHTML = Number.isInteger(num) ? num : num.toFixed(2);
 	},
-	get value() { return +elid('sumSpan').innerHTML; },
+	get value() { return +elid('sumSpan').innerHTML; }
 };
 
 function onBodyLoad() {
