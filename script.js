@@ -327,33 +327,32 @@ function eraseInput() {
 	elid("quantityInput").value = "";
 }
 
-function processKeypress({ keyCode, target }) {
+function processKeypress({ keyCode, target: t }) {
 	if (keyCode === 13) {
 		clickConfirmButton();
-	} else if (target !== elid('nameInput')) {
+	} else if (t !== elid('nameInput')) {
 		getMissingValuesOnInput();
 	} else if (keyCode) {
-		appendProdDataList(target.value);
+		appendProdDataList(t.value.toLowerCase());
 	} else { // if a datalist option is selected
-		target.blur();
+		t.blur();
 	}
 }
 
 const optionsRaw = () => ["Абрикоси", "Апельсини", "Банани", "Бараболя", "Борошно", "Буряки", "Вермішель", "Виноград", "Вишні", "Вода", "Гречка", "Грушки", "Диня", "Зелень", "Ізюм", "Кабачки", "Кавун", "Капуста", "Капуста цвітна", "Капуста броколі", "Капуста брюссельська", "Капуста пекінська", "Кефір", "Ківі", "Корінь селери", "Корінь петрушки", "Корольок", "Кріп", "Кріп і петрушка", "Курятина", "Мандарини", "Масло", "Молоко", "Морква", "Морозиво", "М'ясо", "Насіння соняшнику", "Огірки", "Олія", "Оцет", "Пакети", "Пакети для сміття", "Перець", "Персики", "Петрушка", "Печиво", "Пластівці", "Полуниці", "Помідори", "Приправи", "Пшоно", "Редиска", "Редька", "Риба", "Рукав для запікання", "Ряжанка", "Салат", "Свинина", "Сир", "Сир-творог", "Сир плавлений", "Сік", "Сіль", "Сирки плавлені", "Сливки", "Сметана", "Сода", "Туалетний папір", "Фініки", "Халва", "Хліб", "Хурма", "Цибуля", "Цукерки", "Цукор", "Черешні", "Часник", "Шоколад", "Яблука", "Яйця", "Яловичина"];
 const options = optionsRaw().map(str => [str.toLowerCase(), `<option value="${str}"></option>`]);
 
-function appendProdDataList(inputValue) {
-	elid('prodDataList').innerHTML = inputValue ? (() => {
-		let result = '';
-		inputValue = inputValue.toLowerCase();
-		for (const [optionValue, html] of options) {
-			if (!optionValue.indexOf(inputValue)) {
-				result += html;
-			} else if (result) {
+function appendProdDataList(inpValToLC) {
+	elid('prodDataList').innerHTML = inpValToLC ? (() => {
+		let totalHtml = '';
+		for (const [optionValueToLC, html] of options) {
+			if (!optionValueToLC.indexOf(inpValToLC)) {
+				totalHtml += html;
+			} else if (totalHtml) {
 				break;
 			}
 		}
-		return result;
+		return totalHtml;
 	})() : '';
 }
 
