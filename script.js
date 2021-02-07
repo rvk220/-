@@ -6,15 +6,9 @@ const gattid = (id, attr) => elid(id).getAttribute(attr);
 var products = (() => {
 	try {
 		const parsed = JSON.parse(localStorage.getItem('prodExpArr'));
-		if(parsed && !(parsed instanceof Array)) {
-			throw new Error('JSON parsed is not an array');
-		}
-		return parsed;
-	} catch (err) {
-		console.warn(`An error was caught: "${err.message}". Invalid localStorage data was removed.`);
-		localStorage.removeItem('prodExpArr');
-	}
-})() || [];
+		return (parsed instanceof Array) ? parsed : [];
+	} catch (err) { return []; }
+})();
 
 const sum = {
 	set value(num) {
@@ -25,9 +19,9 @@ const sum = {
 
 function onBodyLoad() {
 	if (products.length) {
-		sum.value = products.reduce((tempSum, prod) => {
+		sum.value = products.reduce((sumValue, prod) => {
 			addToText(prod, false);
-			return Number(prod.cost) + tempSum;
+			return sumValue + Number(prod.cost);
 		}, 0);
 		changeDisplayOfSumAndBottomButtons(false);
 	}
