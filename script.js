@@ -6,7 +6,7 @@ const gattid = (id, attr) => elid(id).getAttribute(attr);
 var products = (() => {
 	try {
 		const parsed = JSON.parse(localStorage.getItem('prodExpArr'));
-		return (parsed instanceof Array) ? parsed : [];
+		return Array.isArray(parsed) ? parsed : [];
 	} catch (err) { return []; }
 })();
 
