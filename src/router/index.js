@@ -1,5 +1,7 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import { createRouter, createWebHashHistory } from 'vue-router';
+import Home from '../views/Home.vue';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap";
 
 const routes = [
   {

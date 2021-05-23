@@ -1,7 +1,9 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="goToSettings">
+    <button type="button" class="btn btn-sm btn-link">Налаштування</button>
+  </div>
+  <div class="container" style="height:200%;">
+    
   </div>
 </template>
 
@@ -16,3 +18,27 @@ export default {
   }
 }
 </script>
+
+<style>
+  .goToSettings {
+    position:fixed;
+    top:0px;
+    right:0px;
+  }
+
+  .goToSettings .btn {
+    color:grey;
+  }
+
+  .goToSettings .btn:focus {
+    color:grey;
+  }
+
+  btn {
+
+  }
+
+  .btn:focus {
+    box-shadow: none !important;
+  }
+</style>

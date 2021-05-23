@@ -1,30 +1,31 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
+<div>
+    <h1>Закупівля</h1>
+</div>
   <router-view/>
 </template>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+  html body {
+    max-height: 100vh;
+    overflow: auto;
+    background-image: url('./assets/background.jpg');
+    background-size:300vh;
+    font-family: ‘Oswald’, sans-serif;
+  }
 
-#nav {
-  padding: 30px;
-}
+  #app {
+    max-width: 600px;
+    margin: 0 auto;
+    height: 100vh;
+  }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
+  #app h1 {
+    font-size: 2rem;
+    text-align: center;
+    margin: 5px 0px 0px;
+    color: #0000cc;
+    filter:sepia(50%);
+    margin-bottom: 0.5rem;
+  }
 </style>
