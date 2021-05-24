@@ -1,7 +1,4 @@
 <template>
-<div>
-    <h1>Закупівля</h1>
-</div>
   <router-view/>
 </template>
 
@@ -15,7 +12,7 @@
   }
 
   #app {
-    max-width: 600px;
+    max-width: 500px;
     margin: 0 auto;
     height: 100vh;
   }
@@ -27,5 +24,18 @@
     color: #0000cc;
     filter:sepia(50%);
     margin-bottom: 0.5rem;
+  }
+
+  .btn:focus, select:focus, a:focus, input:focus {
+    box-shadow: none !important;
+  }
+
+  div .material-icons {
+    position:fixed;
+    top:5px;
+    left:5px;
+    font-size: 2.1rem;
+    color:gray;
+    filter:sepia(50%);
   }
 </style>

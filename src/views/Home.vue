@@ -1,44 +1,67 @@
 <template>
-  <div class="goToSettings">
-    <button type="button" class="btn btn-sm btn-link">Налаштування</button>
-  </div>
+<div class="container">
+  <h1>{{ s.h1Home[lang] }}</h1>
+  <router-link :to="{ name: 'Settings'}">
+    <span class="material-icons goToSettings">
+      settings
+    </span>
+  </router-link>
+</div>
+  
   <div class="container" style="height:200%;">
-    
+    <section class="buttonSection">
+      <div>
+        <span class="material-icons">
+          clear
+        </span>
+      </div>
+      <div>
+        <span class="material-icons">
+          add_circle_outline
+        </span>
+      </div>
+      <div>
+        <span class="material-icons">
+          copy_all
+        </span>
+      </div>
+    </section>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import s from '../composables/Strings.js';
 
 export default {
   name: 'Home',
-  components: {
-    HelloWorld
+
+  data() {
+    return {
+      s, lang: 0
+    }
   }
 }
 </script>
 
 <style>
-  .goToSettings {
-    position:fixed;
-    top:0px;
-    right:0px;
+  .material-icons.goToSettings {
+    position:absolute;
+    top:5px;
+    right:5px;
+    left:auto;
   }
 
-  .goToSettings .btn {
-    color:grey;
+  .buttonSection {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 50px;
   }
 
-  .goToSettings .btn:focus {
-    color:grey;
+  .buttonSection div {
+    display: inline-block;
   }
 
-  btn {
-
-  }
-
-  .btn:focus {
-    box-shadow: none !important;
+  .buttonSection span {
+    position:static;
   }
 </style>
