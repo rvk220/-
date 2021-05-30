@@ -1,4 +1,4 @@
-export default {
+const ls = {
     getLang() {
         let lang = localStorage.getItem('prodExpLang');
         if(!lang && navigator.language) lang = navigator.language.slice(0, 2);
@@ -6,5 +6,68 @@ export default {
         return lang === 0 || lang === 1 || lang === 2 ? lang : 2;
     },
 
-    setLang: lang => localStorage.setItem('prodExpLang', lang)
-}
+    setLang: lang => localStorage.setItem('prodExpLang', lang),
+
+    getSettings() {
+        let settings;
+        const defaults = [
+            ['header', ['Закупівля', 'Покупки', 'Purchases']],
+            ['useCustomUnits', false],
+            ['units', [ ['кг', 'кг', 'kg'], ['шт', 'шт', 'pcs'] ] ],
+        ];
+        try {
+            settings = JSON.parse(localStorage.getItem('prodExpSettings')) || {};
+        } catch(err) {
+            settings = {};
+        }
+        for(const [param, defaultVal] of defaults) {
+            const p = settings[param];
+            if(!p || (param === 'units' && !settings.useCustomUnits)) {
+                settings[param] = defaultVal;
+            } else if(Array.isArray(p)) {
+                if(!p.length) settings[param] = defaultVal;
+                else if(param === 'header') settings.header = p.map((h, i) => h || defaultVal[i]);
+            }
+        }
+        return settings;
+    },
+
+    setSettings: settings => localStorage.setItem('prodExpSettings', JSON.stringify(settings)),
+
+    getLastUsed() {
+        try {
+            const parsed = JSON.parse(localStorage.getItem('prodExpLastUsed'));
+            return (parsed instanceof Object) ? parsed : {};
+        } catch(err) {
+            return {};
+        }
+    },
+
+    setLastUsed: obj => localStorage.setItem('prodExpLastUsed', JSON.stringify(obj)),
+
+    getProducts() {
+        try {
+            const parsed = JSON.parse(localStorage.getItem('prodExpArray'));
+            return Array.isArray(parsed) ? parsed : [];
+        } catch(err) {
+            return [];
+        }
+    },
+
+    setProducts: products => localStorage.setItem('prodExpArray', JSON.stringify(products)),
+
+    clearProducts: () => localStorage.removeItem('prodExpArray'),
+
+    getDatalist() {
+        try {
+            const parsed = JSON.parse(localStorage.getItem('prodExpDatalist'));
+            return Array.isArray(parsed) ? parsed : [];
+        } catch(err) {
+            return [];
+        }
+    },
+
+    setDatalist: arr => localStorage.setItem('prodExpDatalist', JSON.stringify(arr))
+};
+
+export default ls;

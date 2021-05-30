@@ -7,8 +7,14 @@
             </span>
         </router-link></div>
         <div class="form-floating mb-1">
-            <input type="text" class="form-control" :placeholder="s.header[lang]">
+            <input type="text" class="form-control" :placeholder="s.header[lang]"
+                v-model="header" @blur="setHeader">
             <label for="floatingInput">{{ s.header[lang] }}</label>
+        </div>
+        <div class="form-floating mb-1">
+            <input type="text" class="form-control" :placeholder="s.currency[lang]"
+                v-model="currency" @blur="setCurrency">
+            <label for="floatingInput">{{ s.currency[lang] }}</label>
         </div>
         <div class="form-floating">
             <select class="form-select" v-model="lang" aria-label="Floating label select example">
@@ -18,48 +24,167 @@
             </select>
             <label for="floatingSelect">{{ s.language[lang] }}</label>
         </div>
+        <hr>
+        <!-- unit settings: -->
+        <div class="form-check ms-2">
+            <input class="form-check-input" type="checkbox" v-model="useCustomUnits">
+            <label class="form-check-label" for="flexCheckDefault">
+                {{ s.useCustomUnits[lang] }}
+            </label>
+        </div>
+        <div v-if="useCustomUnits">
+            <div class="mx-2 d-flex unitAndDatalistInputs">
+                <div class="col-9 px-2">
+                    <input type="text" class="form-control p-1 d-inline"
+                    v-model="newUnit" @keydown.enter="addUnit">
+                </div>
+                <div class="col-3">
+                    <button class="btn btn-secondary btn-sm" @click="addUnit">{{ s.add[lang] }}</button>
+                </div>
+            </div>
+            <ul class="d-flex justify-content-between flex-wrap px-0 mx-3 my-2">
+                <li v-for="entry in settings.units" class="px-1 mx-1 my-1 badge bg-secondary" :key="entry">     
+                    <span>{{ entry[lang] }}</span><span @click="removeUnit" class="px-1">x</span>
+                </li>
+            </ul>
+        </div>
+        <hr>
+        <!-- datalist settings: -->
+        <div class="form-check ms-2">
+            <input class="form-check-input" type="checkbox" v-model="useDatalist">
+            <label class="form-check-label" for="flexCheckDefault">
+                {{ s.useDatalist[lang] }}
+            </label>
+        </div>
+        <div v-if="useDatalist">
+            <div class="mx-2 d-flex unitAndDatalistInputs">
+                <div class="col-9 px-2">
+                    <input type="text" class="form-control p-1 d-inline"
+                    v-model="newDatalistEntry" @keydown.enter="addDatalistEntry">
+                </div>
+                <div class="col-3">
+                    <button class="btn btn-secondary btn-sm" @click="addDatalistEntry">{{ s.add[lang] }}</button>
+                </div>
+            </div>
+            <ul class="d-flex justify-content-between flex-wrap px-0 mx-3 my-2">
+                <li v-for="entry in datalist" class="px-1 mx-1 my-1 badge bg-secondary" :key="entry">     
+                    <span>{{ entry }}</span><span @click="removeDatalistEntry" class="px-1">x</span>
+                </li>
+            </ul>
+        </div>
+        <hr>
     </div>
 </template>
 
 <script>
 import s from '../composables/Strings.js';
 import ls from '../composables/LocalStorage.js';
+const settings = ls.getSettings(), lang = ls.getLang();
 
 export default {
     data() {
         return {
-            s, lang: ls.getLang()
+            s, settings, lang, useCustomUnits: settings.useCustomUnits, useDatalist: settings.useDatalist,
+            header: settings.header[lang], currency: settings.currency || '₴',
+            datalist: ls.getDatalist(), newDatalistEntry: '', newUnit: ''
         }
     },
 
     methods: {
-        
+        setHeader() {
+            this.header = this.header.trim();
+            this.settings.header[this.lang] = this.header;
+            ls.setSettings(this.settings);
+        },
+
+        setCurrency() {
+            this.currency = this.currency.trim();
+            this.settings.currency = this.currency;
+            ls.setSettings(this.settings);
+        },
+
+        addUnit() {
+            const input = this.newUnit.trim();
+            let unit;
+            if(!input || this.settings.units.findIndex(u => u.includes(input)) !== -1) return;
+            if(['кг', 'кг', 'kg'].includes(input)) {
+                unit = ['кг', 'кг', 'kg'];
+            } else if(['шт', 'шт', 'pcs'].includes(input)) {
+                unit = ['шт', 'шт', 'pcs'];
+            } else {
+                unit = new Array(3).fill(input);
+            }
+            this.settings.units.push(unit);
+            ls.setSettings(this.settings);
+        },
+
+        removeUnit({ target: span }) {
+            const clickedItemText = span.parentNode.childNodes[0].textContent;
+            this.settings.units = this.settings.units.filter(u => !u.includes(clickedItemText));
+            ls.setSettings(this.settings);
+        },
+
+        addDatalistEntry() {
+            const word = this.newDatalistEntry.trim(), datalist = this.datalist;
+            if(!datalist.includes(word)) {
+                datalist.push(word);
+                datalist.sort((a, b) => a < b ? -1 : 1);
+                ls.setDatalist(datalist);
+            }
+            this.newDatalistEntry = '';
+        },
+
+        removeDatalistEntry({ target: span }) {
+            //console.log(span.parentNode.childNodes[0].textContent);
+            const clickedItemText = span.parentNode.childNodes[0].textContent;
+            this.datalist = this.datalist.filter(text => text !== clickedItemText);
+            ls.setDatalist(this.datalist);
+        }
     },
 
     watch: {
-        lang: ls.setLang
+        lang: function(lang) {
+            ls.setLang(lang);
+            this.header = this.settings.header[lang];
+        },
+
+        useCustomUnits() {
+            this.settings.useCustomUnits = this.useCustomUnits;
+            ls.setSettings(settings);
+        },
+
+        useDatalist() {
+            this.settings.useDatalist = this.useDatalist;
+            ls.setSettings(this.settings);
+        }
     }
 }
 </script>
 
-<style>
-    div .form-floating {
-        width: 95%;
-        margin: 0 auto;
+<style scoped>
+    div .unitAndDatalistInputs {
+        display:inline-block;
+        box-shadow: none;
     }
 
-    div .form-floating input, div .form-floating select {
+    div .unitAndDatalistInputs input {
         background: rgb(250, 247, 241);
     }
 
-    div .form-floating select {
-        width: 100%;
-        margin: 0 auto;
-        padding-bottom: 10px;
-        line-height: 1.1;
+    div .unitAndDatalistInputs button {
+        width:90%;
+        margin-top: 0.1rem;
     }
 
-    div .form-floating select:focus {
-        background: white;
+    ul li {
+        filter:sepia(50%);
+        font-size:1rem;
+        font-weight: 100;
+    }
+
+    ul li span:nth-child(2) {
+        margin-left: 1rem;
+        color:black;
+        background-color: rgb(250, 247, 241);
     }
 </style>
