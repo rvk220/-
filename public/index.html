@@ -8,6 +8,14 @@
     <link href="https://fonts.googleapis.com/css?family=Oswald" rel=“stylesheet”>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <script>
+      window.onresize = () => {
+        if(window.location.hash.includes('settings')) return;
+        if(window.innerHeight < document.body.scrollHeight) {
+          window.scrollTo(0,document.body.scrollHeight);
+        }
+      };
+    </script>
   </head>
   <body>
     <noscript>

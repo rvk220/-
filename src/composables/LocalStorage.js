@@ -67,7 +67,36 @@ const ls = {
         }
     },
 
-    setDatalist: arr => localStorage.setItem('prodExpDatalist', JSON.stringify(arr))
+    setDatalist: arr => localStorage.setItem('prodExpDatalist', JSON.stringify(arr)),
+
+    downloadSettingsFile() {
+        const obj = {};
+        ['prodExpLang', 'prodExpSettings', 'prodExpDatalist', 'prodExpLastUsed']
+        .forEach(item => obj[item] = localStorage.getItem(item));
+        const blob = new Blob([JSON.stringify(obj)], { type : 'application/json' });
+        const a = document.createElement('a');
+        a.href = window.URL.createObjectURL(blob);
+        const d = new Date(), year = d.getFullYear(), month = 1 + d.getMonth(), day = d.getDate();
+        const toString = dayOrMonth => `${dayOrMonth < 10 ? '0' : ''}${dayOrMonth}`;
+        a.download = `_settings-${year}-${toString(month)}-${toString(day)}.json`;
+        a.click();
+    },
+
+    uploadSettingsFile(fileInputElement) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const obj = JSON.parse(reader.result);
+            ['prodExpLang', 'prodExpSettings', 'prodExpDatalist', 'prodExpLastUsed']
+            .forEach(item => localStorage.setItem(item, obj[item]));
+            window.location.reload();
+            alert('Відновлення налаштувань було успішним!')
+        }
+        try {
+            reader.readAsText(fileInputElement.files[0]);
+        } catch(err) {
+            alert('Error happenned while reading file!', err);
+        }
+    }
 };
 
 export default ls;

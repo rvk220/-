@@ -49,5 +49,17 @@ export default {
         'Использовать собственные подсказки при введении названий товаров',
         'Use custom hints while inputting product names'
     ],
-    add: ['Додати', 'Добавить', 'Add']
+    add: ['Додати', 'Добавить', 'Add'],
+    backup: ['Бекап', 'Бэкап', 'Backup'],
+    download: ['Завантажити', 'Скачать', 'Download'],
+    downloadOnDevice: [
+        'Завантажити на пристрій файл із поточними налаштуваннями',
+        'Скачать на устройство файл с текущими настройками', 
+        'Download on your device a file with current settings'
+    ],
+    restoreSettingsFromAFile: [
+        'Відновити налаштування з файлу',
+        'Восстановить настройки из файла',
+        'Restore settings from a file'
+    ]
 }

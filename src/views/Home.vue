@@ -95,7 +95,7 @@ export default {
 
     onProductRemove(ind) {
       fn.removeProduct(ind, this);
-    },
+    }
   }
 }
 </script>

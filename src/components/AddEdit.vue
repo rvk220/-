@@ -21,9 +21,10 @@
             <label for="floatingSelect">{{ s.inputType[lang] }}</label>
         </div>
         <div class="form-floating mb-1">
-            <input id="nameInp" v-model="inputProdName" type="text" class="form-control" list="datalist">
+            <input v-model="inputProdName" id="nameInp" ref="nameInp" type="text" class="form-control" autocomplete="off"
+            @focus="isNameInpFocused = true" @blur="onProductNameBlur" @keyup="onProductNameKeyup">
             <label for="floatingInput">{{ s.inputProdName[lang] }}</label>
-            <!-- <datalist v-if="useDatalist" id="datalist" ref="datalist"></datalist> -->
+            <Datalist ref="datalist" v-show="useDatalist && isNameInpFocused" />
         </div>
         <div class="form-floating mb-1">
             <input v-model="inputProdPrice" @input="autoCalc" type="number" class="form-control">
@@ -58,22 +59,22 @@ import s from '../composables/Strings.js';
 import ls from '../composables/LocalStorage.js';
 import fn from '../composables/Functions.js';
 import Modal from '../components/modals/Modal.vue';
+import Datalist from '../components/Datalist.vue';
 const { units, useCustomUnits, useDatalist, currency } = ls.getSettings();
 let { unitName, calcType, isApprox } = ls.getLastUsed();
 let unit = units.findIndex(u => u.includes(unitName));
-const datalistMapped = ls.getDatalist().map(str => [`<option value="${str}"></option>`, str.toLowerCase()]);
 if(unit === -1) unit = 0;
 const lang = ls.getLang();
 export default {
     props: ['editedProductIndex', 'products'],
-    components: { Modal },
+    components: { Modal, Datalist },
 
     data() {
         return {
             s, lang: ls.getLang(), inputProdName: '', inputProdPrice: '', inputProdQuantity: '',
             inputProdCost: '', isApprox: isApprox || false, alert: { isShown: false, text: '' },
             units, useCustomUnits, unit: unit || 0, currency: currency || '₴', useDatalist,
-            calcType: calcType === '0' || calcType === '1' ? calcType : '0'
+            calcType: calcType === '0' || calcType === '1' ? calcType : '0', isNameInpFocused: false
         }
     },
 
@@ -92,6 +93,14 @@ export default {
 
         autoCalc() {
             fn.autoCalc(this);
+        },
+
+        onProductNameKeyup(e) {
+           this.$refs.datalist.onkeyup(e);
+        },
+
+        onProductNameBlur() {
+            setTimeout(() => this.isNameInpFocused = false, 10);
         }
     },
 
@@ -121,7 +130,7 @@ export default {
             ls.setLastUsed({ unitName: units[unit][lang], calcType: this.calcType, isApprox: value });
             isApprox = value;
         }
-    },
+    }
 }
 </script>
 
