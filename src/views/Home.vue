@@ -1,6 +1,6 @@
 <template>
 <div>
-<div class="container" v-if="!showAdd && indexOfEditedItem === -1">
+<div class="container" v-show="!showAdd && indexOfEditedItem === -1">
   <h1>{{ settings.header[lang] }}</h1>
   <router-link :to="{ name: 'Settings'}">
     <span class="material-icons goToSettings">
@@ -12,12 +12,12 @@
     <Li v-for="[num, prod] in products.entries()" :key="num" :prodObj="prod" :num="num"
     :settings="settings" :lang="lang" @click="clickListEntry(num)" />
   </ul>
-  <h2 v-if="products.length">{{ s.totalSum[lang] }}: {{ sum }} {{ settings.currency || '₴' }}.</h2>
+  <h2 ref="sumText" v-show="products.length">{{ s.totalSum[lang] }}: {{ sum }} {{ settings.currency || '₴' }}.</h2>
 
-  <section class="buttonSection">
-      <img src="@\assets\deleteAll.png" alt="clear list" style="width:29%" @click="askIfDeleteAll">
-      <img src="@\assets\add.png" alt="clear list" @click="showAdd = true">
-      <img src="@\assets\copy2.png" alt="clear list" @click="copyListToClipboard">
+  <section class="buttonSection d-flex justify-content-between pe-1">
+      <img src="@\assets\deleteAll.png"  v-show="products.length" alt="clear list" style="width:29%" @click="askIfDeleteAll">
+      <img src="@\assets\add.png" alt="add product" :class="{single: !products.length}" @click="showAdd = true">
+      <img src="@\assets\copy2.png" v-show="products.length" alt="copy list to clipboard" @click="copyListToClipboard">
   </section>
 </div>
 
@@ -67,12 +67,6 @@ export default {
     sum() { return this.products.reduce((sum, prod) => sum + Number(prod.cost), 0) },
     vueObj() { return this; }
   },
-
-  mounted() {
-    window.onstorage = () => {
-      window.location.reload();
-    }
-  },
   
   methods: {
     askIfDeleteAll() { fn.askIfDeleteAll(this) },
@@ -84,13 +78,12 @@ export default {
       this.showEditModalInd = ind;
     },
 
-    onProductCopy(num) {
-      console.log('copy', num);
+    onProductCopy(ind) {
+      fn.copyItemToClipboard(this, ind);
     },
 
     onProductEdit(ind) {
       fn.showEdit(ind, this);
-      //console.log('edit', num);
     },
 
     onProductRemove(ind) {
@@ -108,16 +101,14 @@ export default {
     left:auto;
   }
 
-  .buttonSection {
-    display: flex;
-    justify-content: space-between;
-    margin: 0 5px;
-  }
-
   .buttonSection img {
     filter:sepia(50%);
     width:30%;
     height: 30%;
+  }
+
+  .buttonSection img.single {
+    margin: 0 auto;
   }
 
 </style>

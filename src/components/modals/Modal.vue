@@ -7,7 +7,7 @@
 <div class="modal fade" ref="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-body">
+      <div class="modal-body pb-0">
         {{ text }}
       </div>
       <div class="modal-footer">
@@ -41,7 +41,3 @@ export default {
     }
 }
 </script>
-
-<style>
-
-</style>

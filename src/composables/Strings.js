@@ -61,5 +61,17 @@ export default {
         'Відновити налаштування з файлу',
         'Восстановить настройки из файла',
         'Restore settings from a file'
+    ],
+
+    clearAppData: [
+        'Очистити всі дані',
+        'Очистить все данные',
+        'Clear all data'
+    ],
+
+    confirmClearAllData: [
+        'Ви впевнені, що бажаєте очистити всі дані програми (включно із налаштуваннями, списком підказок назв продуктів та поточним списком покупок)?',
+        'Вы уверены, что желаете очистить все данные приложения (включая настройки, список подскзок названий продуктов и текущий список покупок)?',
+        'Are you sure you wish to clear all the app data (including the settings, the hints of product names and the current list of purchases)?'
     ]
 }

@@ -14,7 +14,7 @@ export default {
         let { name, price, cost, isApprox, unitName, quantity } = this.prodObj;
         if(!name) name = s.defaultProdName[lang];
         return `${this.num + 1}) ${name} ${(() => {
-          if(!price || (quantity == 1 && ['шт', 'pcs'].includes(unitName))) {
+          if(price == 0 || (quantity == 1 && ['шт', 'pcs'].includes(unitName))) {
             return '';
           } else if(quantity == 0) {
             return ` (${price} ${currency}/${unitName})`;

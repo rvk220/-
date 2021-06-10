@@ -16,7 +16,7 @@
       <div class="modal-body pt-0 pb-1">
         {{ vueObj.$refs.ul.children[prodInd].innerHTML }}
       </div>
-			<div class="buttonSection addRemoveButtonsDiv">
+			<div class="buttonSection addRemoveButtonsDiv d-flex justify-content-around">
 				<img src="@/assets/remove1.png" style="width:22%" @click="clickRemove">
 				<img src="@/assets/edit1.png" style="width:21%" @click="clickEdit">
         <img style="width:21%;" src="@/assets/copy1.png" @click="clickCopy">
@@ -34,6 +34,8 @@
 
 <script>
 import s from '@/composables/Strings.js';
+import fn from '@/composables/Functions.js';
+
 export default {
     props: ['prodInd', 'lang', 'vueObj'],
     

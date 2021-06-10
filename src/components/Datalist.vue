@@ -1,5 +1,5 @@
 <template>
-  <div class="autocomplete mt-0">
+  <div class="autocomplete mt-0" id="datalistbody">
       <div class="autocomplete-items">
           <div v-for="str in filteredAndEditedArray" v-html="str" :key="str" @click="choose"></div>
       </div>
@@ -31,6 +31,7 @@ export default {
 
         choose(e) {
           this.$parent.inputProdName = e.target.textContent;
+          this.$parent.isNameInpFocused = false;
         }
     },
 

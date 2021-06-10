@@ -43,7 +43,15 @@ const ls = {
         }
     },
 
-    setLastUsed: obj => localStorage.setItem('prodExpLastUsed', JSON.stringify(obj)),
+    setLastUsed(vueObj) {
+        localStorage.setItem('prodExpLastUsed', JSON.stringify({
+            unitName: vueObj.units[vueObj.unit][vueObj.lang],
+            calcType: vueObj.calcType,
+            isApprox: vueObj.isApprox
+        }));
+    },
+
+    //setLastUsed: obj => localStorage.setItem('prodExpLastUsed', JSON.stringify(obj)),
 
     getProducts() {
         try {
@@ -84,18 +92,24 @@ const ls = {
 
     uploadSettingsFile(fileInputElement) {
         const reader = new FileReader();
-        reader.onload = () => {
-            const obj = JSON.parse(reader.result);
-            ['prodExpLang', 'prodExpSettings', 'prodExpDatalist', 'prodExpLastUsed']
-            .forEach(item => localStorage.setItem(item, obj[item]));
-            window.location.reload();
-            alert('Відновлення налаштувань було успішним!')
-        }
-        try {
-            reader.readAsText(fileInputElement.files[0]);
-        } catch(err) {
-            alert('Error happenned while reading file!', err);
-        }
+        return new Promise(res => {
+            reader.onload = () => {
+                const obj = JSON.parse(reader.result);
+                ['prodExpLang', 'prodExpSettings', 'prodExpDatalist', 'prodExpLastUsed']
+                .forEach(item => localStorage.setItem(item, obj[item]));
+                res();
+            }
+            try {
+                reader.readAsText(fileInputElement.files[0]);
+            } catch(err) {
+                alert('Error happenned while reading file!', err);
+            }
+        });
+    },
+
+    clearSettings() {
+        localStorage.clear();
+        //window.location.reload();
     }
 };
 

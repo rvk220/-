@@ -12,9 +12,12 @@
       window.onresize = () => {
         if(window.location.hash.includes('settings')) return;
         if(window.innerHeight < document.body.scrollHeight) {
-          window.scrollTo(0,document.body.scrollHeight);
+          window.scrollTo(0, document.body.scrollHeight);
         }
       };
+      window.onstorage = () => {
+        window.location.reload();
+      }
     </script>
   </head>
   <body>

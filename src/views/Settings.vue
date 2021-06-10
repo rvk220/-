@@ -39,7 +39,7 @@
                     v-model="newUnit" @keydown.enter="addUnit">
                 </div>
                 <div class="col-3">
-                    <button class="btn btn-secondary btn-sm" @click="addUnit">{{ s.add[lang] }}</button>
+                    <button class="btn btn-secondary btn-sm" @click="addUnit(null)">{{ s.add[lang] }}</button>
                 </div>
             </div>
             <ul class="d-flex justify-content-between flex-wrap px-0 mx-3 my-2">
@@ -63,7 +63,7 @@
                     v-model="newDatalistEntryInput" @keydown.enter="addDatalistEntry">
                 </div>
                 <div class="col-3">
-                    <button class="btn btn-secondary btn-sm" @click="addDatalistEntry">{{ s.add[lang] }}</button>
+                    <button class="btn btn-secondary btn-sm" @click="addDatalistEntry(null)">{{ s.add[lang] }}</button>
                 </div>
             </div>
             <ul class="d-flex justify-content-between flex-wrap px-0 mx-3 my-2">
@@ -88,28 +88,47 @@
         </div>
         <hr>
         <div class="d-flex">
-            <button class="btn btn-danger mb-3" @click="clearAllAppSettings">
-                Clear all app settings
+            <button class="btn btn-danger mb-3" @click="askIfClearSettings">
+                {{ s.clearAppData[lang] }}
             </button>
         </div>
+        <Modal type="confirm" v-if="confirm.isShown" :text="confirm.text"
+        @close="confirm.isShown = false" @confirm="confirm.fn" />
     </div>
 </template>
 
 <script>
 import s from '../composables/Strings.js';
 import ls from '../composables/LocalStorage.js';
-const settings = ls.getSettings(), lang = ls.getLang();
-
+import Modal from '../components/modals/Modal.vue'
 export default {
+    components: { Modal },
+
     data() {
         return {
-            s, settings, lang, useCustomUnits: settings.useCustomUnits, useDatalist: settings.useDatalist,
-            header: settings.header[lang], currency: settings.currency || '₴',
-            datalist: ls.getDatalist(), newDatalistEntryInput: '', newUnit: ''
+            s, settings: ls.getSettings(), lang: ls.getLang(), useCustomUnits: false, useDatalist: false,
+            header: '', currency: '₴', datalist: ls.getDatalist(), newDatalistEntryInput: '', newUnit: '',
+            confirm: { isShown: false, text: '', fn: () => undefined }
         }
     },
 
+    created() { this.load() },
+
     methods: {
+        load(isUpdated = false) {
+            if(isUpdated) {
+                this.settings = ls.getSettings();
+                this.lang = ls.getLang();
+                this.datalist = ls.getDatalist();
+            }
+            const settings = this.settings;
+            this.useCustomUnits = settings.useCustomUnits;
+            this.useDatalist = settings.useDatalist;
+            this.header = settings.header[this.lang];
+            if(settings.currency) this.currency = settings.currency;
+            this.confirm.fn = this.clearSettings;
+        },
+
         setHeader() {
             this.header = this.header.trim();
             this.settings.header[this.lang] = this.header;
@@ -122,7 +141,8 @@ export default {
             ls.setSettings(this.settings);
         },
 
-        addUnit() {
+        addUnit(e) {
+            if(e) e.target.blur();
             const input = this.newUnit.trim();
             let unit;
             if(!input || this.settings.units.findIndex(u => u.includes(input)) !== -1) return;
@@ -135,6 +155,7 @@ export default {
             }
             this.settings.units.push(unit);
             ls.setSettings(this.settings);
+            this.newUnit = '';
         },
 
         removeUnit({ target: span }) {
@@ -143,11 +164,15 @@ export default {
             ls.setSettings(this.settings);
         },
 
-        addDatalistEntry() {
+        addDatalistEntry(e) {
+            if(e) e.target.blur();
             const word = this.newDatalistEntryInput.trim(), datalist = this.datalist;
+            const collator = new Intl.Collator(); //['uk', 'ru', 'en'][this.lang]
             if(word && !datalist.includes(word)) {
-                datalist.push(word);
-                datalist.sort((a, b) => a < b ? -1 : 1);
+                for(var i = 0; i < datalist.length; i++) {
+                    if(collator.compare(word, datalist[i]) < 0) break;
+                }
+                datalist.splice(i, 0, word);
                 ls.setDatalist(datalist);
             }
             this.newDatalistEntryInput = '';
@@ -164,7 +189,17 @@ export default {
         },
 
         uploadSettings(e) {
-            ls.uploadSettingsFile(e.target);
+            ls.uploadSettingsFile(e.target).then(() => this.load(true));
+        },
+
+        askIfClearSettings() {
+            this.confirm.isShown = true;
+            this.confirm.text = s.confirmClearAllData[this.lang];
+        },
+
+        clearSettings() {
+            ls.clearSettings();
+            this.load(true);
         }
     },
 
@@ -176,7 +211,7 @@ export default {
 
         useCustomUnits() {
             this.settings.useCustomUnits = this.useCustomUnits;
-            ls.setSettings(settings);
+            ls.setSettings(this.settings);
         },
 
         useDatalist() {

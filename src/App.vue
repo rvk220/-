@@ -12,7 +12,7 @@
   }
 
   #app {
-    max-width: 500px;
+    max-width: 400px;
     margin: 0 auto;
     max-height: 100vh;
     position: relative;
@@ -76,6 +76,11 @@
     font-size: 1.5rem;
   }
 
+  div .modal {
+    white-space: pre-wrap;
+    line-height: 1.5rem;
+  }
+
   div .modal-footer .btn-primary {
       background-color:rgba(0, 0, 255, 0.9);
       filter:sepia(50%);
@@ -85,6 +90,11 @@
   div .btn-secondary {
     margin: 0 auto;
     background-color: rgb(158, 152, 141);
+  }
+
+  div .modal-dialog {
+    max-width: 400px;
+    margin: 0 2%;
   }
 
   div .modal-header h5 {

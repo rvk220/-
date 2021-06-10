@@ -21,13 +21,12 @@
             <label for="floatingSelect">{{ s.inputType[lang] }}</label>
         </div>
         <div class="form-floating mb-1">
-            <input v-model="inputProdName" id="nameInp" ref="nameInp" type="text" class="form-control" autocomplete="off"
-            @focus="isNameInpFocused = true" @blur="onProductNameBlur" @keyup="onProductNameKeyup">
+            <input v-model="inputProdName" @keyup.enter="confirmAddOrEditProduct" ref="nameInp" id="nameInp" type="text" class="form-control" autocomplete="off" @focus="onNameInputFocusChange(true)" @blur="onNameInputFocusChange(false)" @keyup="onProductNameKeyup">
             <label for="floatingInput">{{ s.inputProdName[lang] }}</label>
             <Datalist ref="datalist" v-show="useDatalist && isNameInpFocused" />
         </div>
         <div class="form-floating mb-1">
-            <input v-model="inputProdPrice" @input="autoCalc" type="number" class="form-control">
+            <input v-model="inputProdPrice" @input="autoCalc" @keyup.enter="confirmAddOrEditProduct" type="number" class="form-control">
             <label for="floatingInput">{{ `${s.inputProdPrice[lang]} (${currency}/${units[unit][lang]})` }}</label>
         </div>
         <div class="form-check ms-3">
@@ -37,11 +36,11 @@
             </label>
         </div>
         <div class="form-floating mb-1">
-            <input v-model="inputProdQuantity" @input="autoCalc" :disabled="calcType === '1'" type="number" class="form-control">
+            <input v-model="inputProdQuantity" @input="autoCalc" @keyup.enter="confirmAddOrEditProduct" :disabled="calcType === '1'" type="number" class="form-control">
             <label for="floatingInput">{{ `${s.inputProdQuantity[lang]} (${units[unit][lang]})` }}</label>
         </div>
         <div class="form-floating mb-1">
-            <input v-model="inputProdCost" @input="autoCalc" :disabled="calcType === '0'" type="number" class="form-control">
+            <input v-model="inputProdCost" @input="autoCalc" @keyup.enter="confirmAddOrEditProduct" :disabled="calcType === '0'" type="number" class="form-control">
             <label for="floatingInput"><strong>{{ `${s.inputProdCost[lang]} (${currency})` }}</strong></label>
         </div>
         <div class="d-flex">
@@ -60,11 +59,6 @@ import ls from '../composables/LocalStorage.js';
 import fn from '../composables/Functions.js';
 import Modal from '../components/modals/Modal.vue';
 import Datalist from '../components/Datalist.vue';
-const { units, useCustomUnits, useDatalist, currency } = ls.getSettings();
-let { unitName, calcType, isApprox } = ls.getLastUsed();
-let unit = units.findIndex(u => u.includes(unitName));
-if(unit === -1) unit = 0;
-const lang = ls.getLang();
 export default {
     props: ['editedProductIndex', 'products'],
     components: { Modal, Datalist },
@@ -72,10 +66,30 @@ export default {
     data() {
         return {
             s, lang: ls.getLang(), inputProdName: '', inputProdPrice: '', inputProdQuantity: '',
-            inputProdCost: '', isApprox: isApprox || false, alert: { isShown: false, text: '' },
-            units, useCustomUnits, unit: unit || 0, currency: currency || '₴', useDatalist,
-            calcType: calcType === '0' || calcType === '1' ? calcType : '0', isNameInpFocused: false
+            inputProdCost: '', isApprox: false, calcType: '0', unit: 0, units: [[]], useCustomUnits: false,
+            useDatalist: false, currency: '₴', isNameInpFocused: false, alert: { isShown: false, text: '' }
         }
+    },
+    
+    created() {
+        const { units, useCustomUnits, useDatalist, currency } = ls.getSettings();
+        this.units = units;
+        if(this.$props.editedProductIndex === -1) {
+            var { unitName, calcType, isApprox } = ls.getLastUsed();
+        } else {
+            var { calcType, cost, isApprox, name, price, quantity,
+                unitName } = this.products[this.$props.editedProductIndex];
+            this.inputProdName = name, this.inputProdPrice = price,
+            this.inputProdQuantity = quantity, this.inputProdCost = cost;
+        }
+
+        const unit = units.findIndex(u => u.includes(unitName));
+        if(unit !== -1) this.unit = unit;
+        this.useCustomUnits = useCustomUnits;
+        this.useDatalist = useDatalist;
+        if(currency) this.currency = currency;
+        if (calcType === '1' || calcType === '0') this.calcType = calcType;
+        this.isApprox = isApprox || false;
     },
 
     methods: {
@@ -99,36 +113,23 @@ export default {
            this.$refs.datalist.onkeyup(e);
         },
 
-        onProductNameBlur() {
-            setTimeout(() => this.isNameInpFocused = false, 10);
-        }
-    },
-
-    mounted() {
-        if(this.$props.editedProductIndex !== -1) {
-            const { calcType, cost, isApprox, name, price, quantity,
-                unitName } = this.products[this.$props.editedProductIndex];
-            this.calcType = calcType, this.inputProdName = name, this.isApprox = isApprox,
-            this.inputProdPrice = price, this.inputProdQuantity = quantity, this.inputProdCost = cost;
-            const unit = this.units.findIndex(u => u.includes(unitName));
-            if(unit !== -1) this.unit = unit;
+        onNameInputFocusChange(isFocused) {
+            if(isFocused) this.isNameInpFocused = true;
+            else if(this.isNameInpFocused) setTimeout(() => this.isNameInpFocused = false, 200);
         }
     },
 
     watch: {
-        unit(value) {
-            ls.setLastUsed({ unitName: units[unit][lang], calcType: this.calcType, isApprox: this.isApprox });
-            unit = value; 
+        unit() {
+            ls.setLastUsed(this);
         },
 
-        calcType(value) {
-            ls.setLastUsed({ unitName: units[unit][lang], calcType: value, isApprox: this.isApprox });
-            calcType = value;
+        calcType() {
+            ls.setLastUsed(this);
         },
 
-        isApprox(value) {
-            ls.setLastUsed({ unitName: units[unit][lang], calcType: this.calcType, isApprox: value });
-            isApprox = value;
+        isApprox() {
+            ls.setLastUsed(this);
         }
     }
 }
