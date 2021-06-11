@@ -48,13 +48,13 @@
             <input v-model="inputProdPrice" @input="autoCalc" @keyup.enter="confirmAddOrEditProduct" type="number" class="form-control" aria-describedby="basic-addon3">
         </div>
         <div class="input-group mb-2">
-            <span class="input-group-text" :class="{ disabled: calcType === '1' }">
+            <span class="input-group-text" :class="{ inactive: calcType === '1' }">
                 {{ `${s.inputProdQuantity[lang]} (${units[unit][lang]})` }}
             </span>
             <input v-model="inputProdQuantity" @input="autoCalc" @keyup.enter="confirmAddOrEditProduct" :disabled="calcType === '1'" type="number" class="form-control" aria-describedby="basic-addon3">
         </div>
         <div class="input-group mb-2">
-            <span class="input-group-text" :class="{ disabled: calcType === '0' }">
+            <span class="input-group-text" :class="{ inactive: calcType === '0' }">
                 <strong>{{ `${s.inputProdCost[lang]} (${currency})` }}</strong>
             </span>
             <input v-model="inputProdCost" @input="autoCalc" @keyup.enter="confirmAddOrEditProduct" :disabled="calcType === '0'" type="number" class="form-control" aria-describedby="basic-addon3">
@@ -169,7 +169,7 @@ export default {
         background-color: rgb(218, 209, 194);
     }
 
-    div input:disabled, .disabled, input:disabled+label {
-        opacity: 50%;
+    div input:disabled, .inactive, input:disabled+label {
+        opacity:0.5;
     }
 </style>
