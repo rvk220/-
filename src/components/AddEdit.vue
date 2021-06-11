@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="position-relative">
         <h1>{{ editedProductIndex === -1 ? s.h1AddProduct[lang] :
             `${s.h1EditProduct[lang]} ${1 + editedProductIndex}` }}</h1>
         <div @click="$emit('goback')">
@@ -20,28 +20,44 @@
             </select>
             <label for="floatingSelect">{{ s.inputType[lang] }}</label>
         </div>
-        <div class="form-floating mb-1">
-            <input v-model="inputProdName" @keyup.enter="confirmAddOrEditProduct" ref="nameInp" id="nameInp" type="text" class="form-control" autocomplete="off" @focus="onNameInputFocusChange(true)" @blur="onNameInputFocusChange(false)" @keyup="onProductNameKeyup">
-            <label for="floatingInput">{{ s.inputProdName[lang] }}</label>
-            <Datalist ref="datalist" v-show="useDatalist && isNameInpFocused" />
-        </div>
-        <div class="form-floating mb-1">
-            <input v-model="inputProdPrice" @input="autoCalc" @keyup.enter="confirmAddOrEditProduct" type="number" class="form-control">
-            <label for="floatingInput">{{ `${s.inputProdPrice[lang]} (${currency}/${units[unit][lang]})` }}</label>
-        </div>
         <div class="form-check ms-3">
             <input v-model="isApprox" class="form-check-input" type="checkbox">
             <label class="form-check-label" for="flexCheckDefault">
                 {{ s.approxDescription[lang] }}
             </label>
         </div>
-        <div class="form-floating mb-1">
-            <input v-model="inputProdQuantity" @input="autoCalc" @keyup.enter="confirmAddOrEditProduct" :disabled="calcType === '1'" type="number" class="form-control">
-            <label for="floatingInput">{{ `${s.inputProdQuantity[lang]} (${units[unit][lang]})` }}</label>
+
+
+        <!--<div class="form-floating mb-2">
+            <input v-model="inputProdName" @keyup.enter="confirmAddOrEditProduct" ref="nameInp" id="nameInp" type="text" class="form-control" autocomplete="off" @focus="onNameInputFocusChange(true)" @blur="onNameInputFocusChange(false)" @keyup="onProductNameKeyup">
+            <label for="floatingInput">{{ s.inputProdName[lang] }}</label>
+            <Datalist ref="datalist" v-show="useDatalist && isNameInpFocused" />
+        </div>  -->
+        <hr class="mx-3 my-0">
+        <label class="form-label my-0" style="margin-left:0.7em">{{ s.inputProdName[lang] }}:</label>
+        <div class="input-group">
+            <input v-model="inputProdName" @keyup.enter="confirmAddOrEditProduct" ref="nameInp" id="nameInp" type="text" class="form-control py-1 text-center" autocomplete="off" @focus="onNameInputFocusChange(true)" @blur="onNameInputFocusChange(false)" @keyup="onProductNameKeyup">
         </div>
-        <div class="form-floating mb-1">
-            <input v-model="inputProdCost" @input="autoCalc" @keyup.enter="confirmAddOrEditProduct" :disabled="calcType === '0'" type="number" class="form-control">
-            <label for="floatingInput"><strong>{{ `${s.inputProdCost[lang]} (${currency})` }}</strong></label>
+        <div v-show="useDatalist && isNameInpFocused" class="form-floating position-absolute start-0 end-0">
+            <Datalist ref="datalist" />
+        </div>      
+        <div class="input-group my-2">
+            <span class="input-group-text">
+                {{ `${s.inputProdPrice[lang]} (${currency}/${units[unit][lang]})` }}
+            </span>
+            <input v-model="inputProdPrice" @input="autoCalc" @keyup.enter="confirmAddOrEditProduct" type="number" class="form-control" aria-describedby="basic-addon3">
+        </div>
+        <div class="input-group mb-2">
+            <span class="input-group-text" :class="{ disabled: calcType === '1' }">
+                {{ `${s.inputProdQuantity[lang]} (${units[unit][lang]})` }}
+            </span>
+            <input v-model="inputProdQuantity" @input="autoCalc" @keyup.enter="confirmAddOrEditProduct" :disabled="calcType === '1'" type="number" class="form-control" aria-describedby="basic-addon3">
+        </div>
+        <div class="input-group mb-2">
+            <span class="input-group-text" :class="{ disabled: calcType === '0' }">
+                <strong>{{ `${s.inputProdCost[lang]} (${currency})` }}</strong>
+            </span>
+            <input v-model="inputProdCost" @input="autoCalc" @keyup.enter="confirmAddOrEditProduct" :disabled="calcType === '0'" type="number" class="form-control" aria-describedby="basic-addon3">
         </div>
         <div class="d-flex">
             <button @click="confirmAddOrEditProduct" class="btn btn-primary confirmbutton">
@@ -140,5 +156,20 @@ export default {
         background-color:rgba(0, 0, 255, 0.9);
         filter:sepia(50%);
         margin: 0 auto;
+    }
+
+    input.form-control {
+        font-size: 1.5rem;
+        line-height: 1;
+        padding: 0 0.5rem;
+    }
+
+    span.input-group-text {
+        min-width:45%;
+        background-color: rgb(218, 209, 194);
+    }
+
+    div input:disabled, .disabled, input:disabled+label {
+        opacity: 50%;
     }
 </style>

@@ -92,6 +92,10 @@
                 {{ s.clearAppData[lang] }}
             </button>
         </div>
+        <hr class="my-1">
+        <div class="pb-1 pt-0 mt-0 text-center">
+            <router-link :to="{ name: 'About' }" class="link-secondary">{{ s.aboutApp[lang] }}</router-link>
+        </div>
         <Modal type="confirm" v-if="confirm.isShown" :text="confirm.text"
         @close="confirm.isShown = false" @confirm="confirm.fn" />
     </div>

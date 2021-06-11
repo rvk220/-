@@ -40,13 +40,24 @@
     filter:sepia(50%);
   }
 
-  div .form-floating {
+  div .form-floating, div .input-group {
       width: 95%;
       margin: 0 auto;
   }
 
-  div .form-floating input, div .form-floating select {
+  div .form-floating input, div .form-floating select, div .input-group input {
     background: rgb(250, 247, 241);
+  }
+
+  input, select, span.input-group-text, p.emptyDescription, p.info {
+    border: 1px solid grey !important;
+  }
+
+  p.emptyDescription, p.info {
+    line-height: 1.2;
+    font-size: 1rem;
+    background-color: rgb(218, 209, 194);
+    text-align: justify;
   }
 
   div .form-floating select {
@@ -58,10 +69,6 @@
 
   div .form-floating select:focus {
       background: white;
-  }
-
-  div .form-floating input:disabled, .form-floating input:disabled+label {
-    opacity: 50%;
   }
 
   ul {
@@ -92,11 +99,6 @@
     background-color: rgb(158, 152, 141);
   }
 
-  div .modal-dialog {
-    max-width: 400px;
-    margin: 0 2%;
-  }
-
   div .modal-header h5 {
     color: #0000cc;
     filter:sepia(50%);
@@ -109,6 +111,7 @@
   }
 
   div .modal-content {
+    max-width: 99vw;
     text-align: justify;
     background-color: rgb(250, 247, 241);
   }

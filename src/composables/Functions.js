@@ -18,9 +18,7 @@ const functions = {
         const toFixed = (str, isMoney = true) => {
             const num = Number(str);
             str = Number.isInteger(num) ? num.toString(10) : num.toFixed(2);
-            //console.log(num > 0 || isMoney, str);
-            //console.log(num > 0 || isMoney ? str : str.replace(/0+$/, ''));
-            return num > 0 || isMoney ? str : str.replace(/0+$/, '');
+            return num === 0 ? '' : isMoney ? str : str.replace(/0+$/, '');
         }
         if(!functions.isInputCorrect(vueObj)) return null;
         const { unit, calcType, inputProdName, inputProdPrice,

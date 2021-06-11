@@ -8,10 +8,15 @@
     </span>
   </router-link>
 
+  <div v-if="!products.length" class="d-flex justify-content-center py-0 mt-1 mb-0">
+    <p class="emptyDescription p-1 mb-1">{{ s.emptyListDescription[lang] }}</p>
+  </div>
+
   <ul class="list-group" ref="ul">
     <Li v-for="[num, prod] in products.entries()" :key="num" :prodObj="prod" :num="num"
     :settings="settings" :lang="lang" @click="clickListEntry(num)" />
   </ul>
+
   <h2 ref="sumText" v-show="products.length">{{ s.totalSum[lang] }}: {{ sum }} {{ settings.currency || '₴' }}.</h2>
 
   <section class="buttonSection d-flex justify-content-between pe-1">
@@ -64,7 +69,10 @@ export default {
   },
 
   computed: {
-    sum() { return this.products.reduce((sum, prod) => sum + Number(prod.cost), 0) },
+    sum() {
+      const num = this.products.reduce((sum, prod) => sum + Number(prod.cost), 0);
+      return Number.isInteger(num) ? num.toString(10) : num.toFixed(2);
+    },
     vueObj() { return this; }
   },
   

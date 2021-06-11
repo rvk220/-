@@ -34,7 +34,6 @@
 
 <script>
 import s from '@/composables/Strings.js';
-import fn from '@/composables/Functions.js';
 
 export default {
     props: ['prodInd', 'lang', 'vueObj'],
