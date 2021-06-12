@@ -16,9 +16,9 @@ const functions = {
 
     getProductObject(vueObj) {
         const toFixed = (str, isMoney = true) => {
-            const num = Number(str);
-            str = Number.isInteger(num) ? num.toString(10) : num.toFixed(2);
-            return num === 0 ? '' : isMoney ? str : str.replace(/(?<=\.\d)0+/, '');
+            const num = Number(Number(str).toFixed(2)); // to handle the famous floating point precision problem
+            str = (Number.isInteger(num) || !isMoney) ? num.toString(10) : num.toFixed(2);
+            return num === 0 ? '' : str;
         }
         if(!functions.isInputCorrect(vueObj)) return null;
         const { unit, calcType, inputProdName, inputProdPrice,
