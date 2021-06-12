@@ -86,15 +86,15 @@ export default {
     aboutApp: ['Про програму', 'О приложении', 'About the app'],
 
     aboutInfo: [
-        `• Версія: 2.0.0 (від 11 червня 2021)<br>
+        `• Версія: 2.0.1 (від 12 червня 2021)<br>
         • Автор: Роман Карагодін (rvk220)<br>
         • Пошта: karagodin1992@gmail.com<br>
         • <a href="https://github.com/rvk220/Interactive-list-of-expenses-in-Ukrainian-language-/tree/master" class="link-secondary">Репозиторій на Github</a>`,
-        `• Версия: 2.0.0 (от 11 июня 2021)<br>
+        `• Версия: 2.0.1 (от 12 июня 2021)<br>
         • Автор: Роман Карагодин (rvk220)<br>
         • Почта: karagodin1992@gmail.com<br>
         • <a href="https://github.com/rvk220/Interactive-list-of-expenses-in-Ukrainian-language-/tree/master" class="link-secondary">Репозиторий на Github</a>`,
-        `• Version: 2.0.0 (11 June 2021)<br>
+        `• Version: 2.0.1 (12 June 2021)<br>
         • Author: Roman Karagodin (rvk220)<br>
         • Contact email: karagodin1992@gmail.com<br>
         • <a href="https://github.com/rvk220/Interactive-list-of-expenses-in-Ukrainian-language-/tree/master" class="link-secondary">Github repository</a>`
