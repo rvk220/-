@@ -1,7 +1,7 @@
 <template>
   <div class="autocomplete mt-0" id="datalistbody">
-      <div class="autocomplete-items">
-          <div v-for="str in filteredAndEditedArray" v-html="str" :key="str" @click="choose"></div>
+      <div class="autocomplete-items" @click.prevent="choose">
+          <div v-for="str in filteredAndEditedArray" v-html="str" :key="str"></div>
       </div>
   </div>
 </template>
@@ -30,13 +30,16 @@ export default {
         },
 
         choose(e) {
-          this.$parent.inputProdName = e.target.textContent;
+          const target = e.target.nodeName === 'DIV' ? e.target : e.target.parentNode;
+          this.$parent.inputProdName = target.textContent;
           this.$parent.isNameInpFocused = false;
+          this.onkeyup({ target: { value: target.textContent } });
         }
     },
 
     mounted() {
-      setTimeout(() => this.onkeyup({ target: document.getElementById('nameInp') }), 10);
+      const nameInp = this.$parent.$refs.nameInp;
+      setTimeout(() => this.onkeyup({ target: nameInp }), 10);
     }
 }
 </script>

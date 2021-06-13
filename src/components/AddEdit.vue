@@ -26,17 +26,10 @@
                 {{ s.approxDescription[lang] }}
             </label>
         </div>
-
-
-        <!--<div class="form-floating mb-2">
-            <input v-model="inputProdName" @keyup.enter="confirmAddOrEditProduct" ref="nameInp" id="nameInp" type="text" class="form-control" autocomplete="off" @focus="onNameInputFocusChange(true)" @blur="onNameInputFocusChange(false)" @keyup="onProductNameKeyup">
-            <label for="floatingInput">{{ s.inputProdName[lang] }}</label>
-            <Datalist ref="datalist" v-show="useDatalist && isNameInpFocused" />
-        </div>  -->
         <hr class="mx-3 my-0">
         <label class="form-label my-0" style="margin-left:0.7em">{{ s.inputProdName[lang] }}:</label>
         <div class="input-group">
-            <input v-model="inputProdName" @keyup.enter="confirmAddOrEditProduct" ref="nameInp" id="nameInp" type="text" class="form-control py-1 text-center" autocomplete="off" @focus="onNameInputFocusChange(true)" @blur="onNameInputFocusChange(false)" @keyup="onProductNameKeyup">
+            <input v-model="inputProdName" ref="nameInp" type="text" class="form-control py-1 text-center" autocomplete="off" @focus="onNameInputFocusChange(true)" @blur="onNameInputFocusChange(false)" @keyup="onProductNameKeyup">
         </div>
         <div v-show="useDatalist && isNameInpFocused" class="form-floating position-absolute start-0 end-0">
             <Datalist ref="datalist" />
@@ -126,12 +119,13 @@ export default {
         },
 
         onProductNameKeyup(e) {
-           this.$refs.datalist.onkeyup(e);
+            if(e.keyCode === 13) this.confirmAddOrEditProduct();
+            else this.$refs.datalist.onkeyup(e);
         },
 
         onNameInputFocusChange(isFocused) {
             if(isFocused) this.isNameInpFocused = true;
-            else if(this.isNameInpFocused) setTimeout(() => this.isNameInpFocused = false, 200);
+            else if(this.isNameInpFocused) setTimeout(() => this.isNameInpFocused = false, 500);
         }
     },
 
